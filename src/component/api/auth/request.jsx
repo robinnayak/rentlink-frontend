@@ -126,7 +126,7 @@ export const postDeposit = async (token, id) => {
   console.log("id", id);
   console.log("token inside postdeposit", token);
   try {
-    const res = axios.post(
+    const res = await axios.post(
       deposit_api,
       {
         room_id: id,
@@ -138,7 +138,7 @@ export const postDeposit = async (token, id) => {
         },
       }
     );
-    console.log("Deposit response:", res.data);
+    console.log("Deposit response:", res);
     return res.data;
   } catch (error) {
     console.error("Error depositing:", error.response?.data || error.message);

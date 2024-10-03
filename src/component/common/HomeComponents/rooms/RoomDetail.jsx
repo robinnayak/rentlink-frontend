@@ -6,8 +6,6 @@ import Navbar from "../../Navbar/Navbar";
 import { getRoomsDetailApi } from "../../../api/auth/request";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { handleApiError } from "../../../utils/ApiErrorHandle";
-import ApiErrors from "../../ApiErrors";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -18,7 +16,7 @@ const RoomDetails = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // For slider control
   const navigate = useNavigate(); // For redirecting to payment
-  const [error,setError] = useState(null)
+
   // Fetch room details by room ID
   useEffect(() => {
     const fetchRoomDetails = async () => {
@@ -27,8 +25,7 @@ const RoomDetails = () => {
         setRoomData(res); // Assuming the response structure has data field
         setLoading(false);
       } catch (error) {
-        const errorMessage = handleApiError(error);
-        setError(errorMessage)
+        console.error("Error fetching room details:", error);
         setLoading(false);
       }
     };
@@ -225,7 +222,6 @@ const RoomDetails = () => {
             <p className="text-gray-700">Curfew Time: {curfew_time}</p>
           )}
         </div>
-        <ApiErrors error={error} />
       </div>
     </>
   );
@@ -244,7 +240,7 @@ const ActionButtons = ({
 }) => {
   // Show buttons if location URL is not HTTP/HTTPS
   if (!location_url.startsWith("http") && !location_url.startsWith("https")) {
-    if (user_type === "Leasee" || user_type === "Landlord") {
+    if (user_type === "Leasee") {
       return (
         <div className="flex space-x-4 mt-6">
           <button

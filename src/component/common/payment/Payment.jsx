@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { postDeposit } from "../../api/auth/request";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBillWave } from "@fortawesome/free-solid-svg-icons";
+import { handleApiError } from "../../utils/ApiErrorHandle";
 
 export const Payment = () => {
   const location = useLocation();
@@ -17,7 +18,9 @@ export const Payment = () => {
       const res = await postDeposit(token, room_id);
       console.log(res.data);
     } catch (err) {
-      console.log(err);
+
+      const errorMessage = handleApiError(err)
+      console.log("payment error",errorMessage)
     }
     navigate(-1); // Navigate back after payment
   };
