@@ -8,12 +8,17 @@ import { LocationName } from "../locations/LocationsName";
 // Instructions component for Google Maps URL
 const GoogleMapsUrlInstructions = () => (
   <div className="p-4 mb-6 bg-blue-100 rounded-lg border border-blue-300">
-    <h3 className="text-lg font-semibold text-blue-700">How to Obtain a Google Maps URL</h3>
+    <h3 className="text-lg font-semibold text-blue-700">
+      How to Obtain a Google Maps URL
+    </h3>
     <ol className="list-decimal ml-4 mt-2 text-blue-600">
       <li>Open Google Maps and search for the desired location.</li>
       <li>Click on the pin or drop a pin on the exact location.</li>
       <li>Click on the "Share" button.</li>
-      <li>Copy the link provided under "Share" and paste it into the location URL field.</li>
+      <li>
+        Copy the link provided under "Share" and paste it into the location URL
+        field.
+      </li>
     </ol>
   </div>
 );
@@ -34,8 +39,10 @@ const AddRoom = () => {
     pets_allowed: true,
     smoking_allowed: false,
   });
+  const [isLoading, setIsLoading] = useState(false); // New loading state
   const token = useSelector((state) => state.auth?.token);
-  const [photos, setPhotos] = useState([]);
+  const [photo, setPhoto] = useState(null); // Single photo (changed from 'photos')
+  const [roomImages, setRoomImages] = useState([]); // For multiple room images
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -46,8 +53,10 @@ const AddRoom = () => {
         ...roomData,
         [name]: checked,
       });
-    } else if (name === "photos") {
-      setPhotos(files);
+    } else if (name === "photo") {
+      setPhoto(files[0]); // Store multiple selected files
+    } else if (name === "room_images") {
+      setRoomImages(files);
     } else {
       setRoomData({
         ...roomData,
@@ -58,29 +67,36 @@ const AddRoom = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate if the location URL is provided
+    setIsLoading(true);
     if (!roomData.location_url) {
       setError("Location URL is required");
       return;
     }
 
-    // Create FormData to send room data and photos
     const formData = new FormData();
     Object.keys(roomData).forEach((key) => {
       formData.append(key, roomData[key]);
     });
 
-    // Append selected photos
-    for (let i = 0; i < photos.length; i++) {
-      formData.append("photos", photos[i]);
+    // Append the single room photo
+    if (photo) {
+      formData.append("photos", photo); // 'photos' key should match the backend model
     }
 
+    // Append multiple room images
+    for (let i = 0; i < roomImages.length; i++) {
+      formData.append("room_images", roomImages[i]); // 'room_images' key for multiple images
+    }
+    console.log("final form data", formData);
     try {
       const response = await postAddRoom(token, formData);
       console.log("Room added successfully:", response);
       navigate("/");
     } catch (error) {
       console.error("Error adding room:", error);
+      setError("Failed to add the room.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,15 +105,16 @@ const AddRoom = () => {
       <Navbar />
       <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Add Room Page</h1>
-        
-        {/* Google Maps Instructions */}
+
         <GoogleMapsUrlInstructions />
-        
+
         {error && <p className="text-red-500 mb-4">{error}</p>}
-        
+
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Title *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Title *
+            </label>
             <input
               type="text"
               name="title"
@@ -110,7 +127,9 @@ const AddRoom = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Description *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Description *
+            </label>
             <textarea
               name="description"
               value={roomData.description}
@@ -118,12 +137,13 @@ const AddRoom = () => {
               className="mt-1 block w-full border rounded-md p-2"
               placeholder="A cozy two-bedroom apartment with a kitchen, ideal for small families or roommates."
               required
-
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Price *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Price *
+            </label>
             <input
               type="text"
               name="price"
@@ -131,12 +151,13 @@ const AddRoom = () => {
               onChange={handleChange}
               className="mt-1 block w-full border rounded-md p-2"
               required
-
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Address *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Address *
+            </label>
             <select
               name="address"
               value={roomData.address}
@@ -154,7 +175,9 @@ const AddRoom = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Sub Address *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Sub Address *
+            </label>
             <input
               type="text"
               name="sub_address"
@@ -163,12 +186,13 @@ const AddRoom = () => {
               className="mt-1 block w-full border rounded-md p-2"
               placeholder="Near Siddhartha Bank"
               required
-
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Location URL *</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Location URL *
+            </label>
             <input
               type="text"
               name="location_url"
@@ -179,15 +203,32 @@ const AddRoom = () => {
               required
             />
           </div>
-
+          {/* Single Room Photo */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Upload Photos</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Room Photo
+            </label>
             <input
               type="file"
-              name="photos"
+              name="photo" // Changed to 'photo' for single image
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+              accept="image/*"
+            />
+          </div>
+
+          {/* Multiple Room Images */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Additional Room Images
+            </label>
+            <input
+              type="file"
+              name="room_images"
               multiple
               onChange={handleChange}
               className="mt-1 block w-full border rounded-md p-2"
+              accept="image/*"
             />
           </div>
 
@@ -199,7 +240,6 @@ const AddRoom = () => {
                 checked={roomData.has_electricity}
                 onChange={handleChange}
                 className="mr-2"
-
               />
               Has Electricity
             </label>
@@ -211,8 +251,6 @@ const AddRoom = () => {
                 checked={roomData.has_wifi}
                 onChange={handleChange}
                 className="mr-2"
-                
-
               />
               Has Wifi
             </label>
@@ -275,9 +313,12 @@ const AddRoom = () => {
 
           <button
             type="submit"
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+            className={`bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled ={isLoading}
           >
-            Add Room
+            {isLoading ? "Add room..." : "Add Room"}
           </button>
         </form>
       </div>

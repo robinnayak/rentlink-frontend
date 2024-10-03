@@ -4,6 +4,8 @@ import { MEDIA_URL } from "../../../api/base";
 import { useSelector } from "react-redux";
 import Navbar from "../../Navbar/Navbar";
 import { getRoomsDetailApi } from "../../../api/auth/request";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -12,6 +14,7 @@ const RoomDetails = () => {
   const user_type = useSelector((state) => state.auth?.user_type); // Get user type (Leasee or Landlord)
   const [roomData, setRoomData] = useState(null); // State to hold room data
   const [loading, setLoading] = useState(true); // Loading state
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // For slider control
   const navigate = useNavigate(); // For redirecting to payment
 
   // Fetch room details by room ID
@@ -49,7 +52,7 @@ const RoomDetails = () => {
 
   // Handle Deposit (for both Leasee and Landlord)
   const handleDeposit = (room_id, room_title) => {
-    navigate("/payment", { state: { room_id,room_title } });
+    navigate("/payment", { state: { room_id, room_title } });
   };
 
   if (loading) {
@@ -80,11 +83,29 @@ const RoomDetails = () => {
     pets_allowed,
     smoking_allowed,
     curfew_time,
-    photos,
+    photos, // Single main image
+    room_images, // Array of additional images
     owner_email,
   } = roomData;
 
-  const room_link = `${MEDIA_URL}${photos}` || null;
+  // Combine photos and room_images for the slider
+  const allImages = [
+    { id: "main", image: photos }, // Main image
+    ...(room_images || []), // Additional images, if available
+  ];
+
+  // Handling the navigation of the slider
+  const handlePrevious = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? allImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === allImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
   const renderMapOrPayment = () => {
     if (location_url.startsWith("http") || location_url.startsWith("https")) {
@@ -109,7 +130,6 @@ const RoomDetails = () => {
     } else {
       return <p className="text-red-500 mt-2">{location_url}</p>;
     }
-    
   };
 
   return (
@@ -121,24 +141,42 @@ const RoomDetails = () => {
           {title}
         </h1>
 
-        {/* Room Image */}
-        {room_link ? (
-          <img
-            src={room_link}
-            alt={title}
-            className="w-full h-80 object-cover mb-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105"
-          />
-        ) : (
-          <div className="w-full h-80 bg-gray-300 flex items-center justify-center mb-6 rounded-lg">
-            <p className="text-gray-500">No Image Available</p>
-          </div>
-        )}
+        {/* Room Image Slider */}
+        <div className="relative mb-6">
+          {allImages && allImages.length > 0 ? (
+            <div className="relative">
+              <img
+                src={`${MEDIA_URL}${allImages[currentImageIndex].image}`}
+                alt={`Room Img ${currentImageIndex + 1}`}
+                className="w-full h-80 object-cover rounded-lg shadow-md transition-transform duration-300 hover:scale-105"
+              />
+              {/* Left Arrow */}
+              <button
+                onClick={handlePrevious}
+                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-600 transition-colors"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+              {/* Right Arrow */}
+              <button
+                onClick={handleNext}
+                className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-600 transition-colors"
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </button>
+            </div>
+          ) : (
+            <div className="w-full h-80 bg-gray-300 flex items-center justify-center mb-6 rounded-lg">
+              <p className="text-gray-500">No Image Available</p>
+            </div>
+          )}
+        </div>
 
         {/* Room Details */}
         <div className="text-center">
           <p className="text-lg text-gray-700 mb-4">{description}</p>
           <p className="text-2xl text-gray-900 mb-6 font-semibold">
-          NRP {price} /month
+            NRP {price} /month
           </p>
           <p className="text-gray-700 mb-2">
             Location: {address}, {sub_address}

@@ -4,12 +4,15 @@ import { getOwnerRoomsByIdAPI } from "../api/auth/request";
 import { useSelector } from "react-redux";
 import { MEDIA_URL } from "../api/base"; // Assuming you have a base URL for image links
 import Navbar from "../common/Navbar/Navbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const ViewRoom = () => {
   const location = useLocation();
   const token = useSelector((state) => state.auth?.token);
   const room_id = location.state?.room_id;
   const [roomDetails, setRoomDetails] = useState(null); // State to store room details
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // State to track the current image index
 
   const fetchOwnerRoomById = useCallback(async () => {
     try {
@@ -24,6 +27,7 @@ const ViewRoom = () => {
   useEffect(() => {
     fetchOwnerRoomById();
   }, [fetchOwnerRoomById]);
+
   if (!roomDetails) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -47,8 +51,28 @@ const ViewRoom = () => {
     pets_allowed,
     smoking_allowed,
     location_url,
-    photos,
+    photos, // Main image
+    room_images, // Array of additional images
   } = roomDetails;
+
+  // Combine main image and room_images for the slider
+  const allImages = [
+    { id: "main", image: photos }, // Main image comes first
+    ...room_images, // Spread additional images from room_images
+  ];
+
+  // Handling the navigation of the slider
+  const handlePrevious = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? allImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === allImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
 
   return (
     <>
@@ -59,14 +83,30 @@ const ViewRoom = () => {
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* Room Image */}
-          <div className="lg:w-1/2">
-            {photos ? (
-              <img
-                src={`${MEDIA_URL}${photos}`}
-                alt="Room"
-                className="w-full h-auto object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-              />
+          {/* Room Image Slider */}
+          <div className="lg:w-1/2 relative">
+            {allImages && allImages.length > 0 ? (
+              <div className="relative">
+                <img
+                  src={`${MEDIA_URL}${allImages[currentImageIndex].image}`}
+                  alt={`Room Img ${currentImageIndex + 1}`}
+                  className="w-full h-auto object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+                />
+                {/* Left Arrow */}
+                <button
+                  onClick={handlePrevious}
+                  className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </button>
+                {/* Right Arrow */}
+                <button
+                  onClick={handleNext}
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-600 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+              </div>
             ) : (
               <div className="text-gray-500">No image available</div>
             )}
