@@ -1,0 +1,265 @@
+import React, { useState } from "react";
+import axios from "axios";
+import Navbar from "../common/Navbar/Navbar";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { postAddRoom } from "../api/auth/request";
+import { LocationName } from "../locations/LocationsName";
+
+const AddRoom = () => {
+  const [roomData, setRoomData] = useState({
+    title: "Spacious Room in Downtown",
+    description:
+      "A cozy, fully furnished room located in the heart of the city. Ideal for students or professionals.",
+    price: "500.00",
+    address: "Thamel",
+    sub_address: "Block A, Room 302",
+    location_url: "https://maps.google.com/?q=27.7172,85.3240",
+    has_electricity: true,
+    has_wifi: true,
+    has_water_supply: true,
+    has_parking: false,
+    is_available: true,
+    pets_allowed: true,
+    smoking_allowed: false,
+  });
+  const token = useSelector((state) => state.auth?.token);
+  const [photos, setPhotos] = useState([]); // State to hold the selected photos
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    if (type === "checkbox") {
+      setRoomData({
+        ...roomData,
+        [name]: checked,
+      });
+    } else if (name === "photos") {
+      setPhotos(files); // Handle photo selection
+    } else {
+      setRoomData({
+        ...roomData,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Create FormData to send room data and photos
+    const formData = new FormData();
+
+    // Append room data
+    Object.keys(roomData).forEach((key) => {
+      formData.append(key, roomData[key]);
+    });
+
+    // Append selected photos
+    for (let i = 0; i < photos.length; i++) {
+      formData.append("photos", photos[i]);
+    }
+
+    try {
+      const response = postAddRoom(token, formData);
+      console.log("Room added successfully:", response);
+      navigate("/");
+    } catch (error) {
+      console.error("Error adding room:", error);
+    }
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold mb-4">Add Room Page</h1>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Title
+            </label>
+            <input
+              type="text"
+              name="title"
+              value={roomData.title}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={roomData.description}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Price
+            </label>
+            <input
+              type="text"
+              name="price"
+              value={roomData.price}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Address
+            </label>
+            <select
+              name="address"
+              value={roomData.address}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            >
+              <option value="">Select Address</option>{" "}
+              {/* Default placeholder */}
+              {LocationName.map((loc) => (
+                <option key={loc.value} value={loc.value}>
+                  {loc.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Sub Address
+            </label>
+            <input
+              type="text"
+              name="sub_address"
+              value={roomData.sub_address}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Location URL
+            </label>
+            <input
+              type="text"
+              name="location_url"
+              value={roomData.location_url}
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Photos
+            </label>
+            <input
+              type="file"
+              name="photos"
+              multiple
+              onChange={handleChange}
+              className="mt-1 block w-full border rounded-md p-2"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="has_electricity"
+                checked={roomData.has_electricity}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Has Electricity
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="has_wifi"
+                checked={roomData.has_wifi}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Has Wifi
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="has_water_supply"
+                checked={roomData.has_water_supply}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Has Water Supply
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="has_parking"
+                checked={roomData.has_parking}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Has Parking
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="is_available"
+                checked={roomData.is_available}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Is Available
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="pets_allowed"
+                checked={roomData.pets_allowed}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Pets Allowed
+            </label>
+
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="smoking_allowed"
+                checked={roomData.smoking_allowed}
+                onChange={handleChange}
+                className="mr-2"
+              />
+              Smoking Allowed
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+          >
+            Add Room
+          </button>
+        </form>
+      </div>
+    </>
+  );
+};
+
+export default AddRoom;
