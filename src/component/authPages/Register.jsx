@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { postRegisterAPI } from "../api/auth/request";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { handleApiError } from "../utils/ApiErrorHandle";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -13,8 +14,8 @@ const Register = () => {
     contact_number: "",
   });
   const [isLoading, setIsLoading] = useState(false); // New loading state
-
-  const navigation = useNavigate()
+  const [error, setError] = useState(null);
+  const navigation = useNavigate();
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -25,16 +26,17 @@ const Register = () => {
 
   const submitUser = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       const res = await postRegisterAPI(formData);
       console.log("Registration Successful:", res);
-        navigation("/login")
+      navigation("/login");
     } catch (error) {
-      console.error("Error registering user:", error);
-    }
-    finally{
-      setIsLoading(false)
+      let api_error = handleApiError(error);
+      console.log(api_error);
+      setError(api_error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,8 +146,17 @@ const Register = () => {
           }`}
           disabled={isLoading}
         >
-        {isLoading ? "Submiting..." : "Register"} {/* Show loading text */}
+          {isLoading ? "Submiting..." : "Register"} {/* Show loading text */}
         </button>
+        <div className="text-center mt-4">
+          <p className="text-primary-text">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary-btn hover:underline">
+              Login here
+            </Link>
+          </p>
+        </div>
+        {error ? <div className="text-red-500">{error}</div> : ""}
       </form>
     </div>
   );

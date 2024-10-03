@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogoutApi } from '../../api/auth/request';
 import { setLogout } from '../../app/feature/authSlice';
-
+import Cookies from 'js-cookie';
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const username = useSelector(state => state.auth?.user?.first_name);
@@ -20,6 +20,8 @@ const ProfileDropdown = () => {
   const handleLogout = async () => {
     try {
       await LogoutApi(token); // Call the API to handle server-side logout
+      Cookies.set("token", "");
+      Cookies.set("email", "");
       dispatch(setLogout()); // Clear authentication state (Redux)
       navigate('/login'); // Redirect to the login page
     } catch (error) {

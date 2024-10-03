@@ -34,13 +34,27 @@ const Navbar = () => {
         {/* Navbar Links and Profile Dropdown (Right for Desktop) */}
         <div className="hidden lg:flex lg:space-x-6 items-center">
           <ul className="flex space-x-6 items-center">
-            <NavItem text="Home" link="/" icon={faHome} />
-            <NavItem text="Our Members" link="/members" icon={faUsers} />
-            <NavItem text="Contact Us" link="/contact" icon={faEnvelope} />
+            <li className="mx-4">
+              <NavItem text="Home" link="/" icon={faHome} />
+            </li>
+            <li className="mx-4">
+              <NavItem text="Our Members" link="/members" icon={faUsers} />
+            </li>
+            <li className="mx-4">
+              <NavItem text="Contact Us" link="/contact" icon={faEnvelope} />
+            </li>
             {user_type === "Landlord" && (
               <>
-                <NavItem text="Add Room" link="/add-room" icon={faEnvelope} />
-                <NavItem text="Manage Rooms" link="/manage-rooms" icon={faEnvelope} />
+                <li className="mx-4">
+                  <NavItem text="Add Room" link="/add-room" icon={faEnvelope} />
+                </li>
+                <li className="mx-4">
+                  <NavItem
+                    text="Manage Rooms"
+                    link="/manage-rooms"
+                    icon={faEnvelope}
+                  />
+                </li>
               </>
             )}
             {!token && (
@@ -58,7 +72,10 @@ const Navbar = () => {
         {/* Hamburger Menu and ProfileDropdown for Mobile */}
         <div className="lg:hidden flex items-center space-x-4">
           {token && <ProfileDropdown />} {/* Profile Dropdown for Mobile */}
-          <button onClick={toggleMenu} className="text-white focus:outline-none">
+          <button
+            onClick={toggleMenu}
+            className="text-white focus:outline-none"
+          >
             {isOpen ? (
               <FontAwesomeIcon icon={faTimes} size="lg" />
             ) : (
@@ -89,7 +106,11 @@ const Navbar = () => {
               <NavItem text="Add Room" link="/add-room" icon={faEnvelope} />
             </li>
             <li className="p-4 border-b border-gray-700">
-              <NavItem text="Manage Rooms" link="/manage-rooms" icon={faEnvelope} />
+              <NavItem
+                text="Manage Rooms"
+                link="/manage-rooms"
+                icon={faEnvelope}
+              />
             </li>
           </>
         )}

@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
-import axios from "axios";
 import { useSelector } from "react-redux";
+import { postContactUs } from "../../api/auth/request";
+import { handleApiError } from "../../utils/ApiErrorHandle";
 
 const ContactUs = () => {
   // State for the form fields and response handling
 
-  const email = useSelector((state) => state.auth?.user?.email) || "example@email.com";
-  const token = useSelector((state)=> state.auth?.token)
-  console.log("email",email)
+  const email =
+    useSelector((state) => state.auth?.user?.email) || "example@email.com";
+  const token = useSelector((state) => state.auth?.token);
+  console.log("email", email);
   const [formData, setFormData] = useState({
     name: "",
-    email: token? email: "",
+    email: token ? email : "",
     subject: "",
-    message: ""
+    message: "",
   });
 
   const [responseMessage, setResponseMessage] = useState("");
@@ -36,20 +38,17 @@ const ContactUs = () => {
 
     // Send a POST request to the Django backend with Axios
     try {
-      const response = await axios.post("http://localhost:8000/rooms/contact/", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.status === 201 || response.status === 200) {
+      const response = postContactUs(formData);
+      console.log("response from contact form",response)
+      if (response) {
         setResponseMessage("Your message has been sent successfully!");
         setFormData({ name: "", email: "", subject: "", message: "" }); // Reset the form
       } else {
         setError("Failed to send your message. Please try again.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again later.");
+      const errormessage = handleApiError(error);
+      setError(errormessage);
     } finally {
       setLoading(false);
     }

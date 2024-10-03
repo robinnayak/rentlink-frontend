@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux"; // Import useDispatch from redux
 import { postLoginApi } from "../api/auth/request";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link from react-router-dom
 import { setToken, setUser } from "../app/feature/authSlice";
 import { handleApiError } from "../utils/ApiErrorHandle";
-
+import Cookies from "js-cookie";
+import ApiErrors from "../common/ApiErrors";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -34,6 +35,10 @@ const Login = () => {
       // Dispatch action to store token in Redux
       dispatch(setToken(res.access));
       dispatch(setUser(res.user));
+
+      // Store token and email in cookies with expiration of 7 days
+      Cookies.set("token", res.access, { expires: 7 });
+      Cookies.set("email", res.user.email, { expires: 7 });
 
       // Navigate to the home page after successful login
       navigate("/");
@@ -88,11 +93,17 @@ const Login = () => {
           }`}
           disabled={isLoading}
         >
-        {isLoading ? "Logging in..." : "Login"} {/* Show loading text */}
+          {isLoading ? "Logging in..." : "Login"} {/* Show loading text */}
         </button>
-        {error && (
-          <div className="error-message text-red-600 mt-4">{error}</div>
-        )}
+        <ApiErrors error={error} />
+        <div className="text-center mt-4">
+          <p className="text-primary-text">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-primary-btn hover:underline">
+              Register here
+            </Link>
+          </p>
+        </div>
       </form>
       {/* Display error message if any */}
     </div>

@@ -4,12 +4,18 @@ import Navbar from "./Navbar/Navbar";
 import SearchBar from "./HomeComponents/SearchBar";
 import { getFilterRoomsApi } from "../api/auth/request";
 import RoomList from "./HomeComponents/rooms/RoomList";
-
+import { handleApiError } from "../utils/ApiErrorHandle";
+import ApiErrors from "./ApiErrors";
+// import Cookies from "js-cookie";
 const Home = () => {
   const [rooms, setRooms] = useState([]);
   const token = useSelector((state) => state.auth?.token);
+  // const token = Cookies.get('token')
+  // console.log("protected route token",token)
+
   const [filter, setFilter] = useState({}); // Initial filter is an empty object
   const [loading,setLoading] = useState(true)
+  const [error,setError] = useState(null)
   useEffect(() => {
     const fetchRooms = async () => {
       setLoading(true)
@@ -18,7 +24,8 @@ const Home = () => {
         const res = await getFilterRoomsApi(token, filter);
         setRooms(res); // Assuming res is the array of rooms
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        const errorMessage = handleApiError(error)
+        setError(errorMessage)
       }finally{
         setLoading(false)
       }
@@ -40,6 +47,7 @@ const Home = () => {
         ) : (
           <RoomList rooms={rooms} />
         )}
+        <ApiErrors error={error}/>
       </div>
     </>
   );

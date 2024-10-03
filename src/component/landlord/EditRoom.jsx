@@ -31,7 +31,7 @@ const EditRoom = () => {
     contact_number: room.contact_number || "",
     photos: room.photos || null, // Store the existing image URL
   });
-
+ // eslint-disable-next-line
   const [roomImages, setRoomImages] = useState(room.room_images || []); // For multiple room images
   const [newRoomImages, setNewRoomImages] = useState([]); // For new uploaded room images
   const [imagePreview, setImagePreview] = useState(

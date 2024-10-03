@@ -7,6 +7,7 @@ import {
   room_api,
   logout_api,
   filter_room_api,
+  contact_api,
 } from "./endpoints";
 
 export const postRegisterAPI = async (credentials) => {
@@ -221,27 +222,12 @@ export const getFilterRoomsApi = async (token, filters = null) => {
   }
 };
 
-
-
-
-// export const getFilterRoomsApi = async (token) => {
-//   try {
-//     const headers = {
-//       "Content-Type": "application/json", // Ensure sending JSON data
-//     };
-
-//     if (token) {
-//       headers["Authorization"] = `Bearer ${token}`; // Add Authorization header if token is present
-//     }
-
-//     const res = await axios.get(filter_room_api, { headers });
-//     // console.log("Rooms response:", res.data);
-//     return res.data;
-//   } catch (error) {
-//     console.error(
-//       "Error fetching rooms:",
-//       error.response?.data || error.message
-//     );
-//     throw error;
-//   }
-// };
+export const postContactUs = async (formData)=>{
+  const res = await axios.post(contact_api,formData,{
+    headers:{
+      "Content-Type":"application/json",
+    }
+  })
+  console.log("contact form res",res)
+  return res.data
+}
