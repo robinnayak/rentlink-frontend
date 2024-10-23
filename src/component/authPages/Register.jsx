@@ -1,39 +1,119 @@
 import React, { useState } from "react";
 import { postRegisterAPI } from "../api/auth/request";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { handleApiError } from "../utils/ApiErrorHandle";
+import Navbar from "../common/Navbar/Navbar";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
-    last_name: "",
+    last_name: "", // Optional field
     password: "",
     password2: "",
-    is_landowner: false,
+    is_landowner: true, // Default to landlord, can be toggled
     contact_number: "",
   });
-  const [isLoading, setIsLoading] = useState(false); // New loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigation = useNavigate();
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const [role, setRole] = useState("landowner"); // Track role
+  const [passwordError, setPasswordError] = useState(""); // Password validation state
+  const [passwordValidation, setPasswordValidation] = useState({
+    hasUppercase: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+    hasMinLength: false,
+  });
+  const [phoneError, setPhoneError] = useState(""); // Phone validation state
+
+  const navigate = useNavigate();
+
+  const handleRoleChange = (role) => {
+    setRole(role);
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      is_landowner: role === "landowner",
     });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    if (name === "password") {
+      validatePassword(value);
+    }
+
+    if (name === "contact_number") {
+      validatePhoneNumber(value);
+    }
+  };
+
+  const validatePassword = (password) => {
+    // Real-time password validation
+    setPasswordValidation({
+      hasUppercase: /[A-Z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      hasMinLength: password.length >= 9,
+    });
+  };
+
+  const validatePhoneNumber = (phone) => {
+    const phonePattern = /^\d{0,10}$/;
+    if (!phonePattern.test(phone)) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+    } else {
+      setPhoneError("");
+    }
+    setFormData({
+      ...formData,
+      contact_number: phone,
+    });
+  };
+
+  const checkPasswordsMatch = () => {
+    const { password, password2 } = formData;
+    return password === password2;
+  };
+
+  const validateForm = () => {
+    const { hasUppercase, hasNumber, hasSpecialChar, hasMinLength } =
+      passwordValidation;
+
+    if (!checkPasswordsMatch()) {
+      setPasswordError("Passwords do not match.");
+      return false;
+    }
+
+    if (!hasUppercase || !hasNumber || !hasSpecialChar || !hasMinLength) {
+      setPasswordError("Password does not meet the required criteria.");
+      return false;
+    }
+
+    if (formData.contact_number.length !== 10) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+      return false;
+    }
+
+    setPasswordError("");
+    setPhoneError("");
+    return true;
   };
 
   const submitUser = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Validate form before submitting
     setIsLoading(true);
     try {
       const res = await postRegisterAPI(formData);
       console.log("Registration Successful:", res);
-      navigation("/login");
+      navigate("/login");
     } catch (error) {
       let api_error = handleApiError(error);
-      console.log(api_error);
       setError(api_error);
     } finally {
       setIsLoading(false);
@@ -41,124 +121,189 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-primary-bg">
-      <form
-        onSubmit={submitUser}
-        className="bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center text-primary-text">
-          Register
-        </h1>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            First Name
-          </label>
-          <input
-            type="text"
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Last Name
-          </label>
-          <input
-            type="text"
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Contact Number
-          </label>
-          <input
-            type="text"
-            name="contact_number"
-            value={formData.contact_number}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            name="password2"
-            value={formData.password2}
-            onChange={handleChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-primary-text leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-primary-text text-sm font-bold mb-2">
-            Are you a landowner?
-          </label>
-          <input
-            type="checkbox"
-            name="is_landowner"
-            checked={formData.is_landowner}
-            onChange={handleChange}
-            className="mr-2 leading-tight"
-          />
-        </div>
-        <button
-          type="submit"
-          className={`bg-primary-btn hover:bg-primary-btn-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={isLoading}
+    <>
+      <Navbar />
+
+      <div className="flex justify-center items-center h-screen bg-primary-bg">
+        {error && <p className="text-red-500">{error}</p>}
+        <form
+          onSubmit={submitUser}
+          className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 w-full max-w-md"
         >
-          {isLoading ? "Submiting..." : "Register"} {/* Show loading text */}
-        </button>
-        <div className="text-center mt-4">
-          <p className="text-primary-text">
-            Already have an account?{" "}
-            <Link to="/login" className="text-primary-btn hover:underline">
-              Login here
-            </Link>
-          </p>
-        </div>
-        {error ? <div className="text-red-500">{error}</div> : ""}
-      </form>
-    </div>
+          <h1 className="text-2xl font-bold mb-6 text-center text-primary-text">
+            Register
+          </h1>
+
+          {/* Role selection */}
+          <div className="flex justify-center mb-6">
+            <button
+              type="button"
+              className={`px-4 py-2 mr-4 ${
+                role === "landowner"
+                  ? "bg-primary-btn text-white"
+                  : "bg-gray-200"
+              } rounded-lg`}
+              onClick={() => handleRoleChange("landowner")}
+            >
+              Landlord
+            </button>
+            <button
+              type="button"
+              className={`px-4 py-2 ${
+                role === "room_finder"
+                  ? "bg-primary-btn text-white"
+                  : "bg-gray-200"
+              } rounded-lg`}
+              onClick={() => handleRoleChange("room_finder")}
+            >
+              Room Finder
+            </button>
+          </div>
+
+          {/* First Name */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              First Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+
+          {/* Last Name */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              Last Name <span className="text-gray-500">(Optional)</span>
+            </label>
+            <input
+              type="text"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          {/* Email */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+
+          {/* Contact Number */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              Contact Number <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="contact_number"
+              value={formData.contact_number}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              required
+              maxLength={10}
+              pattern="\d*"
+              placeholder="Enter 10 digit phone number"
+            />
+            {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
+          </div>
+
+          {/* Password */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              Password <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              required
+            />
+            <small className="text-sm text-gray-500">
+              Password must include at least 9 characters, one uppercase letter,
+              one number, and one special character.
+            </small>
+          </div>
+
+          {/* Password validation feedback */}
+          <div className="mb-4">
+            <ul className="text-sm text-gray-500">
+              <li
+                className={`${
+                  passwordValidation.hasUppercase ? "text-green-500" : ""
+                }`}
+              >
+                • At least one uppercase letter
+              </li>
+              <li
+                className={`${
+                  passwordValidation.hasNumber ? "text-green-500" : ""
+                }`}
+              >
+                • At least one number
+              </li>
+              <li
+                className={`${
+                  passwordValidation.hasSpecialChar ? "text-green-500" : ""
+                }`}
+              >
+                • At least one special character
+              </li>
+              <li
+                className={`${
+                  passwordValidation.hasMinLength ? "text-green-500" : ""
+                }`}
+              >
+                • At least 9 characters long
+              </li>
+            </ul>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="mb-4">
+            <label className="block text-primary-text text-sm font-bold mb-2">
+              Confirm Password <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              name="password2"
+              value={formData.password2}
+              onChange={handleChange}
+              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          {passwordError && <p className="text-red-500">{passwordError}</p>}
+
+          <button
+            type="submit"
+            className={`bg-primary-btn hover:bg-primary-btn-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Register"}
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

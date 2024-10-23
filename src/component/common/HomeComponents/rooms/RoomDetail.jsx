@@ -22,7 +22,9 @@ const RoomDetails = () => {
     const fetchRoomDetails = async () => {
       try {
         const res = await getRoomsDetailApi(token, room_id);
+        
         setRoomData(res); // Assuming the response structure has data field
+        console.log("res room detail data",res)
         setLoading(false);
       } catch (error) {
         console.error("Error fetching room details:", error);
@@ -240,7 +242,7 @@ const ActionButtons = ({
 }) => {
   // Show buttons if location URL is not HTTP/HTTPS
   if (!location_url.startsWith("http") && !location_url.startsWith("https")) {
-    if (user_type === "Leasee") {
+    if (user_type === "Leasee" || user_type === "Landlord") {
       return (
         <div className="flex space-x-4 mt-6">
           <button
@@ -259,27 +261,6 @@ const ActionButtons = ({
       );
     } 
     
-  }
-  // If location URL is HTTP/HTTPS, show buttons for both Leasee and Landlord
-  if (location_url.startsWith("http") && location_url.startsWith("https")) {
-    if(user_type==="Landlord"){
-      return (
-        <div className="flex space-x-4 mt-6">
-          <button
-            onClick={() => handleConfirm(room_id)}
-            className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
-          >
-            Confirm Visit
-          </button>
-          <button
-            onClick={() => handleCancel(room_id)}
-            className="text-white bg-red-600 border border-red-500 rounded-lg px-4 py-2 hover:bg-red-700 transition duration-300"
-          >
-            Cancel Visit
-          </button>
-        </div>
-      );
-    }
   }
 
   return null;
