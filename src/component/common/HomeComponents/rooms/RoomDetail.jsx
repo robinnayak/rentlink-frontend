@@ -5,7 +5,10 @@ import { useSelector } from "react-redux";
 import Navbar from "../../Navbar/Navbar";
 import { getRoomsDetailApi } from "../../../api/auth/request";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -22,9 +25,9 @@ const RoomDetails = () => {
     const fetchRoomDetails = async () => {
       try {
         const res = await getRoomsDetailApi(token, room_id);
-        
+
         setRoomData(res); // Assuming the response structure has data field
-        console.log("res room detail data",res)
+        console.log("res room detail data", res);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching room details:", error);
@@ -83,7 +86,7 @@ const RoomDetails = () => {
     has_water_supply,
     has_parking,
     pets_allowed,
-    smoking_allowed,
+    // smoking_allowed,
     curfew_time,
     photos, // Single main image
     room_images, // Array of additional images
@@ -136,7 +139,9 @@ const RoomDetails = () => {
 
   return (
     <>
-      <Navbar />
+      <div className="mb-4">
+        <Navbar />
+      </div>
 
       <div className="container my-8 p-8 bg-white rounded-lg shadow-xl max-w-4xl mx-auto transition-all duration-300">
         <h1 className="text-4xl font-bold mb-6 text-gray-900 text-center">
@@ -217,9 +222,9 @@ const RoomDetails = () => {
           <p className="text-gray-700">
             Pets Allowed: {pets_allowed ? "Yes" : "No"}
           </p>
-          <p className="text-gray-700">
+          {/* <p className="text-gray-700">
             Smoking Allowed: {smoking_allowed ? "Yes" : "No"}
-          </p>
+          </p> */}
           {curfew_time && (
             <p className="text-gray-700">Curfew Time: {curfew_time}</p>
           )}
@@ -252,15 +257,14 @@ const ActionButtons = ({
             Request Visit
           </button>
           <button
-            onClick={() => handleDeposit(room_id,room_title)}
+            onClick={() => handleDeposit(room_id, room_title)}
             className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
           >
             Deposit Now
           </button>
         </div>
       );
-    } 
-    
+    }
   }
 
   return null;

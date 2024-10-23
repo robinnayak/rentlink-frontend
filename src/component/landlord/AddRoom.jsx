@@ -299,7 +299,7 @@ const AddRoom = () => {
               Pets Allowed
             </label>
 
-            <label className="flex items-center">
+            {/* <label className="flex items-center">
               <input
                 type="checkbox"
                 name="smoking_allowed"
@@ -308,7 +308,7 @@ const AddRoom = () => {
                 className="mr-2"
               />
               Smoking Allowed
-            </label>
+            </label> */}
           </div>
 
           <button

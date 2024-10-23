@@ -282,7 +282,7 @@ const EditRoom = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block font-medium">Smoking Allowed</label>
             <input
               type="checkbox"
@@ -290,7 +290,7 @@ const EditRoom = () => {
               checked={formData.smoking_allowed}
               onChange={handleInputChange}
             />
-          </div>
+          </div> */}
 
           {/* Availability */}
           <div>

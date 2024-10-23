@@ -49,7 +49,7 @@ const ViewRoom = () => {
     has_parking,
     is_available,
     pets_allowed,
-    smoking_allowed,
+    // smoking_allowed,
     location_url,
     photos, // Main image
     room_images, // Array of additional images
@@ -157,7 +157,7 @@ const ViewRoom = () => {
                 <li>Water Supply: {has_water_supply ? "Yes" : "No"}</li>
                 <li>Parking: {has_parking ? "Yes" : "No"}</li>
                 <li>Pets Allowed: {pets_allowed ? "Yes" : "No"}</li>
-                <li>Smoking Allowed: {smoking_allowed ? "Yes" : "No"}</li>
+                {/* <li>Smoking Allowed: {smoking_allowed ? "Yes" : "No"}</li> */}
               </ul>
             </div>
           </div>
