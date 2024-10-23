@@ -122,7 +122,9 @@ const Register = () => {
 
   return (
     <>
-      <Navbar />
+      <div className="mb-4">
+        <Navbar />
+      </div>
 
       <div className="flex justify-center items-center h-screen bg-primary-bg">
         {error && <p className="text-red-500">{error}</p>}
@@ -243,7 +245,40 @@ const Register = () => {
           </div>
 
           {/* Password validation feedback */}
-          <div className="mb-4">
+          <div className="mb-4 text-sm text-gray-500">
+            <span
+              className={`${
+                passwordValidation.hasUppercase ? "text-green-500" : ""
+              }`}
+            >
+              A-Z
+            </span>
+            ,
+            <span
+              className={`${
+                passwordValidation.hasNumber ? "text-green-500" : ""
+              }`}
+            >
+              0-9
+            </span>
+            ,
+            <span
+              className={`${
+                passwordValidation.hasSpecialChar ? "text-green-500" : ""
+              }`}
+            >
+              @, #, !
+            </span>
+            ,
+            <span
+              className={`${
+                passwordValidation.hasMinLength ? "text-green-500" : ""
+              }`}
+            >
+              9+ chars
+            </span>
+          </div>
+          {/* <div className="mb-4">
             <ul className="text-sm text-gray-500">
               <li
                 className={`${
@@ -274,7 +309,7 @@ const Register = () => {
                 • At least 9 characters long
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Confirm Password */}
           <div className="mb-4">
