@@ -23,6 +23,11 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  // Close the mobile menu when a NavItem is clicked
+  const handleCloseMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className="bg-gray-800 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
@@ -92,24 +97,40 @@ const Navbar = () => {
         }`}
       >
         <li className="p-4 border-b border-gray-700">
-          <NavItem text="Home" link="/" icon={faHome} />
+          <NavItem text="Home" link="/" icon={faHome} onClose={handleCloseMenu} />
         </li>
         <li className="p-4 border-b border-gray-700">
-          <NavItem text="Our Members" link="/members" icon={faUsers} />
+          <NavItem
+            text="Our Members"
+            link="/members"
+            icon={faUsers}
+            onClose={handleCloseMenu}
+          />
         </li>
         <li className="p-4 border-b border-gray-700">
-          <NavItem text="Contact Us" link="/contact" icon={faEnvelope} />
+          <NavItem
+            text="Contact Us"
+            link="/contact"
+            icon={faEnvelope}
+            onClose={handleCloseMenu}
+          />
         </li>
         {user_type === "Landlord" && (
           <>
             <li className="p-4 border-b border-gray-700">
-              <NavItem text="Add Room" link="/add-room" icon={faEnvelope} />
+              <NavItem
+                text="Add Room"
+                link="/add-room"
+                icon={faEnvelope}
+                onClose={handleCloseMenu}
+              />
             </li>
             <li className="p-4 border-b border-gray-700">
               <NavItem
                 text="Manage Rooms"
                 link="/manage-rooms"
                 icon={faEnvelope}
+                onClose={handleCloseMenu}
               />
             </li>
           </>
@@ -117,10 +138,15 @@ const Navbar = () => {
         {!token && (
           <>
             <li className="p-4 border-b border-gray-700">
-              <NavItem text="Register" link="/register" icon={faUserPlus} />
+              <NavItem
+                text="Register"
+                link="/register"
+                icon={faUserPlus}
+                onClose={handleCloseMenu}
+              />
             </li>
             <li className="p-4">
-              <NavItem text="Login" link="/login" icon={faSignInAlt} />
+              <NavItem text="Login" link="/login" icon={faSignInAlt} onClose={handleCloseMenu} />
             </li>
           </>
         )}

@@ -6,6 +6,7 @@ import { setToken, setUser } from "../app/feature/authSlice";
 import { handleApiError } from "../utils/ApiErrorHandle";
 import Cookies from "js-cookie";
 import ApiErrors from "../common/ApiErrors";
+import Navbar from "../common/Navbar/Navbar";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -52,6 +53,9 @@ const Login = () => {
   };
 
   return (
+    <>
+      <Navbar />
+
     <div className="flex justify-center items-center h-screen bg-primary-bg">
       <form
         onSubmit={submitLogin}
@@ -107,6 +111,7 @@ const Login = () => {
       </form>
       {/* Display error message if any */}
     </div>
+    </>
   );
 };
 
