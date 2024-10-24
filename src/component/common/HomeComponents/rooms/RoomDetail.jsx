@@ -60,6 +60,10 @@ const RoomDetails = () => {
     navigate("/payment", { state: { room_id, room_title } });
   };
 
+  const handleView360 = (room_id,room_title) =>{
+    navigate("/view360", { state: { room_id, room_title}})
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -205,6 +209,7 @@ const RoomDetails = () => {
             handleConfirm={handleConfirm}
             handleCancel={handleCancel}
             handleDeposit={handleDeposit}
+            handleView360={handleView360}
             room_title={title}
           />
         </div>
@@ -243,6 +248,7 @@ const ActionButtons = ({
   handleConfirm,
   handleCancel,
   handleDeposit,
+  handleView360,
   room_title,
 }) => {
   // Show buttons if location URL is not HTTP/HTTPS
@@ -262,12 +268,29 @@ const ActionButtons = ({
           >
             Deposit Now
           </button>
+          <button
+            onClick={() => handleView360(room_id, room_title)}
+            className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
+          >
+            View 360
+          </button>
         </div>
       );
     }
   }
 
-  return null;
+
+
+  return (
+    <div className="flex space-x-4 mt-6">
+      <button
+            onClick={() => handleView360(room_id, room_title)}
+            className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
+          >
+            View 360
+          </button>
+    </div>
+  )
 };
 
 export default RoomDetails;

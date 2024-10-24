@@ -14,6 +14,7 @@ import EditRoom from '../landlord/EditRoom';
 import ViewRoom from '../landlord/ViewRoom';
 import NotFound from './NotFound';
 import Settings from '../common/settings/Settings';
+import View360 from '../landlord/View360';
 
 const NavigationContainer = () => {
   return (
@@ -36,6 +37,8 @@ const NavigationContainer = () => {
         <Route path="/view-rooms" element={<ProtectedRoute element={<ViewRoom />} />} />
         
         <Route path="/payment" element={<ProtectedRoute element={<Payment />} />} />
+
+        <Route path='/view360' element={<View360/>} />
 
         {/* Catch-all Route for unknown paths */}
         <Route path="*" element={<NotFound />} />
