@@ -3,7 +3,7 @@ import Navbar from "../common/Navbar/Navbar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { postAddRoom } from "../api/auth/request";
-import { LocationName } from "../locations/LocationsName";
+import { LocationName } from "../locations/LocationsName"; // Import your location data
 
 // Instructions component for Google Maps URL
 const GoogleMapsUrlInstructions = () => (
@@ -28,6 +28,8 @@ const AddRoom = () => {
     title: "",
     description: "",
     price: "",
+    province: "",
+    district: "",
     address: "",
     sub_address: "",
     location_url: "",
@@ -39,12 +41,47 @@ const AddRoom = () => {
     pets_allowed: true,
     smoking_allowed: false,
   });
-  const [isLoading, setIsLoading] = useState(false); // New loading state
+
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state for form submission
   const token = useSelector((state) => state.auth?.token);
-  const [photo, setPhoto] = useState(null); // Single photo (changed from 'photos')
+  const [photo, setPhoto] = useState(null); // Single photo
   const [roomImages, setRoomImages] = useState([]); // For multiple room images
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Handle province change to update district options
+  const handleProvinceChange = (e) => {
+    const selectedProvince = e.target.value;
+    setRoomData({
+      ...roomData,
+      province: selectedProvince,
+      district: "",
+      address: "",
+    });
+
+    const provinceData = LocationName.find(
+      (loc) => loc.province === selectedProvince
+    );
+    if (provinceData) {
+      setDistrictOptions(provinceData.districts || []);
+      setLocationOptions([]); // Reset locations on province change
+    }
+  };
+
+  // Handle district change to update location options
+  const handleDistrictChange = (e) => {
+    const selectedDistrict = e.target.value;
+    setRoomData({ ...roomData, district: selectedDistrict, address: "" });
+
+    const districtData = districtOptions.find(
+      (dist) => dist.district === selectedDistrict
+    );
+    if (districtData) {
+      setLocationOptions(districtData.locations || []);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -54,7 +91,7 @@ const AddRoom = () => {
         [name]: checked,
       });
     } else if (name === "photo") {
-      setPhoto(files[0]); // Store multiple selected files
+      setPhoto(files[0]); // Single photo
     } else if (name === "room_images") {
       setRoomImages(files);
     } else {
@@ -68,8 +105,11 @@ const AddRoom = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
+
     if (!roomData.location_url) {
       setError("Location URL is required");
+      setIsLoading(false);
       return;
     }
 
@@ -78,22 +118,19 @@ const AddRoom = () => {
       formData.append(key, roomData[key]);
     });
 
-    // Append the single room photo
     if (photo) {
-      formData.append("photos", photo); // 'photos' key should match the backend model
+      formData.append("photos", photo);
     }
 
-    // Append multiple room images
     for (let i = 0; i < roomImages.length; i++) {
-      formData.append("room_images", roomImages[i]); // 'room_images' key for multiple images
+      formData.append("room_images", roomImages[i]);
     }
-    console.log("final form data", formData);
+
     try {
-      const response = await postAddRoom(token, formData);
-      console.log("Room added successfully:", response);
+      const res = await postAddRoom(token, formData);
+      console.log("res post add room data",res)
       navigate("/");
     } catch (error) {
-      console.error("Error adding room:", error);
       setError("Failed to add the room.");
     } finally {
       setIsLoading(false);
@@ -111,6 +148,7 @@ const AddRoom = () => {
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} encType="multipart/form-data">
+          {/* Title */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Title *
@@ -126,6 +164,7 @@ const AddRoom = () => {
             />
           </div>
 
+          {/* Description */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Description *
@@ -135,11 +174,12 @@ const AddRoom = () => {
               value={roomData.description}
               onChange={handleChange}
               className="mt-1 block w-full border rounded-md p-2"
-              placeholder="A cozy two-bedroom apartment with a kitchen, ideal for small families or roommates."
+              placeholder="A cozy two-bedroom apartment with a kitchen."
               required
             />
           </div>
 
+          {/* Price */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Price *
@@ -154,26 +194,74 @@ const AddRoom = () => {
             />
           </div>
 
+          {/* Province */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Address *
+              Province *
             </label>
             <select
-              name="address"
-              value={roomData.address}
-              onChange={handleChange}
+              name="province"
+              value={roomData.province}
+              onChange={handleProvinceChange}
               className="mt-1 block w-full border rounded-md p-2"
               required
             >
-              <option value="">Select Address</option>
+              <option value="">Select Province</option>
               {LocationName.map((loc) => (
-                <option key={loc.value} value={loc.value}>
-                  {loc.label}
+                <option key={loc.province} value={loc.province}>
+                  {loc.province}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* District */}
+          {districtOptions.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                District *
+              </label>
+              <select
+                name="district"
+                value={roomData.district}
+                onChange={handleDistrictChange}
+                className="mt-1 block w-full border rounded-md p-2"
+                required
+              >
+                <option value="">Select District</option>
+                {districtOptions.map((dist) => (
+                  <option key={dist.district} value={dist.district}>
+                    {dist.district}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Address (Location) */}
+          {locationOptions.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Address *
+              </label>
+              <select
+                name="address"
+                value={roomData.address}
+                onChange={handleChange}
+                className="mt-1 block w-full border rounded-md p-2"
+                required
+              >
+                <option value="">Select Location</option>
+                {locationOptions.map((loc) => (
+                  <option key={loc.value} value={loc.value}>
+                    {loc.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Sub Address */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
               Sub Address *
@@ -189,9 +277,10 @@ const AddRoom = () => {
             />
           </div>
 
+          {/* Google Maps URL */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
-              Location URL *
+              Location URL (Google Maps) *
             </label>
             <input
               type="text"
@@ -199,10 +288,13 @@ const AddRoom = () => {
               value={roomData.location_url}
               onChange={handleChange}
               className="mt-1 block w-full border rounded-md p-2"
-              placeholder="https://maps.google.com/?q=latitude,longitude"
+              placeholder="Paste Google Maps URL here"
               required
             />
           </div>
+
+          {/* Other fields (has_electricity, has_wifi, etc.) */}
+          {/* Add similar checkboxes and inputs as shown in your original code for other attributes */}
           {/* Single Room Photo */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">
@@ -311,15 +403,16 @@ const AddRoom = () => {
             </label> */}
           </div>
 
-          <button
-            type="submit"
-            className={`bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled ={isLoading}
-          >
-            {isLoading ? "Add room..." : "Add Room"}
-          </button>
+          {/* Submit Button */}
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
         </form>
       </div>
     </>

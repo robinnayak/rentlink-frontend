@@ -1,5 +1,5 @@
 import React from "react";
-import { LocationName } from "../../locations/LocationsName";
+import { LocationAddressName } from "../../locations/LocationsName";
 
 const LocationFilter = ({ handleChange }) => {
   return (
@@ -14,7 +14,7 @@ const LocationFilter = ({ handleChange }) => {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
       >
         <option value="">Select a location</option>
-        {LocationName.map((loc) => (
+        {LocationAddressName.map((loc) => (
           <option key={loc.value} value={loc.value}>
             {loc.label}
           </option>
