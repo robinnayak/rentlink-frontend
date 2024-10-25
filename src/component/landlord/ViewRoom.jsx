@@ -40,6 +40,8 @@ const ViewRoom = () => {
     title,
     description,
     price,
+    province,
+    district,
     address,
     sub_address,
     contact_number,
@@ -121,7 +123,7 @@ const ViewRoom = () => {
               <strong>Price:</strong> NRP {price}
             </p>
             <p className="text-lg">
-              <strong>Address:</strong> {address}, {sub_address}
+              <strong>Address:</strong> {province},{district}, {address}, {sub_address}
             </p>
             <p className="text-lg">
               <strong>Contact Number:</strong> {contact_number}

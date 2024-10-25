@@ -1,9 +1,10 @@
+
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { putOwnerRoomsByIdAPI } from "../api/auth/request"; // Import the API
 import { MEDIA_URL } from "../api/base";
-import { LocationName } from "../locations/LocationsName";
+import { LocationAddressName } from "../locations/LocationsName";
 import Navbar from "../common/Navbar/Navbar";
 
 const EditRoom = () => {
@@ -18,6 +19,8 @@ const EditRoom = () => {
     title: room.title || "",
     description: room.description || "",
     price: room.price || "",
+    province: room.province||"",
+    district: room.district||"",
     address: room.address || "",
     sub_address: room.sub_address || "",
     has_electricity: room.has_electricity || false,
@@ -31,6 +34,10 @@ const EditRoom = () => {
     contact_number: room.contact_number || "",
     photos: room.photos || null, // Store the existing image URL
   });
+
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [locationOptions, setLocationOptions] = useState([]);
+
  // eslint-disable-next-line
   const [roomImages, setRoomImages] = useState(room.room_images || []); // For multiple room images
   const [newRoomImages, setNewRoomImages] = useState([]); // For new uploaded room images
@@ -62,6 +69,7 @@ const EditRoom = () => {
     const files = Array.from(e.target.files);
     setNewRoomImages(files);
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -155,7 +163,7 @@ const EditRoom = () => {
               className="mt-1 block w-full border rounded-md p-2"
             >
               <option value="">Select Address</option>
-              {LocationName.map((loc) => (
+              {LocationAddressName.map((loc) => (
                 <option key={loc.value} value={loc.value}>
                   {loc.label}
                 </option>
