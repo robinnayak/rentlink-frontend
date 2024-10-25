@@ -7,6 +7,8 @@ import ServicesFilter from "./ServicesFilter";
 const SearchBar = ({ onSearch }) => {
   const [filters, setFilters] = useState({
     is_available: '',
+    province:'',
+    district: '',
     address: '',
     min_price: '',
     max_price: '',

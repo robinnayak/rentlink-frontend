@@ -268,12 +268,12 @@ const ActionButtons = ({
           >
             Deposit Now
           </button>
-          <button
+          {/* <button
             onClick={() => handleView360(room_id, room_title)}
             className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
           >
             View 360
-          </button>
+          </button> */}
         </div>
       );
     }
@@ -283,12 +283,12 @@ const ActionButtons = ({
 
   return (
     <div className="flex space-x-4 mt-6">
-      <button
+      {/* <button
             onClick={() => handleView360(room_id, room_title)}
             className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
           >
             View 360
-          </button>
+          </button> */}
     </div>
   )
 };
