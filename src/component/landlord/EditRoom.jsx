@@ -1,10 +1,9 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { putOwnerRoomsByIdAPI } from "../api/auth/request"; // Import the API
 import { MEDIA_URL } from "../api/base";
-import { LocationAddressName } from "../locations/LocationsName";
+import { LocationName } from "../locations/LocationsName";
 import Navbar from "../common/Navbar/Navbar";
 
 const EditRoom = () => {
@@ -19,8 +18,8 @@ const EditRoom = () => {
     title: room.title || "",
     description: room.description || "",
     price: room.price || "",
-    province: room.province||"",
-    district: room.district||"",
+    province: room.province || "",
+    district: room.district || "",
     address: room.address || "",
     sub_address: room.sub_address || "",
     has_electricity: room.has_electricity || false,
@@ -35,15 +34,51 @@ const EditRoom = () => {
     photos: room.photos || null, // Store the existing image URL
   });
 
-  const [districtOptions, setDistrictOptions] = useState([]);
-  const [locationOptions, setLocationOptions] = useState([]);
-
- // eslint-disable-next-line
+  const [districts, setDistricts] = useState([]);
+  const [locations, setLocations] = useState([]);
+  // eslint-disable-next-line
   const [roomImages, setRoomImages] = useState(room.room_images || []); // For multiple room images
   const [newRoomImages, setNewRoomImages] = useState([]); // For new uploaded room images
   const [imagePreview, setImagePreview] = useState(
     room.photos ? `${MEDIA_URL}${room.photos}` : null // Load the existing image
   );
+
+  // Handle province change
+  const handleProvinceChange = (e) => {
+    const selectedProvince = e.target.value;
+    setFormData({
+      ...formData,
+      province: selectedProvince,
+      district: "",
+      address: "",
+    });
+
+    const foundProvince = LocationName.find(
+      (province) => province.province === selectedProvince
+    );
+
+    if (foundProvince) {
+      setDistricts(foundProvince.districts);
+    } else {
+      setDistricts([]);
+      setLocations([]);
+    }
+  };
+  // Handle district change
+  const handleDistrictChange = (e) => {
+    const selectedDistrict = e.target.value;
+    setFormData({ ...formData, district: selectedDistrict, address: "" });
+
+    const foundDistrict = districts.find(
+      (district) => district.district === selectedDistrict
+    );
+
+    if (foundDistrict) {
+      setLocations(foundDistrict.locations);
+    } else {
+      setLocations([]);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -69,7 +104,6 @@ const EditRoom = () => {
     const files = Array.from(e.target.files);
     setNewRoomImages(files);
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,6 +139,27 @@ const EditRoom = () => {
     }
   };
 
+  useEffect(() => {
+    // Set initial districts and locations if editing an existing room
+    if (formData.province) {
+      const foundProvince = LocationName.find(
+        (province) => province.province === formData.province
+      );
+      if (foundProvince) {
+        setDistricts(foundProvince.districts);
+
+        if (formData.district) {
+          const foundDistrict = foundProvince.districts.find(
+            (district) => district.district === formData.district
+          );
+          if (foundDistrict) {
+            setLocations(foundDistrict.locations);
+          }
+        }
+      }
+    }
+  }, [formData.province, formData.district]);
+
   return (
     <>
       <Navbar />
@@ -113,7 +168,6 @@ const EditRoom = () => {
         <form
           onSubmit={handleSubmit}
           className="grid grid-cols-1 gap-4 md:grid-cols-2"
-          encType="multipart/form-data"
         >
           {/* Title */}
           <div>
@@ -152,18 +206,57 @@ const EditRoom = () => {
               required
             />
           </div>
+          {/* Province */}
+          <div>
+            <label className="block font-medium">Province</label>
+            <select
+              name="province"
+              value={formData.province}
+              onChange={handleProvinceChange}
+              className="border p-2 w-full"
+              required
+            >
+              <option value="">Select Province</option>
+              {LocationName.map((prov) => (
+                <option key={prov.province} value={prov.province}>
+                  {prov.province}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* District */}
+          <div>
+            <label className="block font-medium">District</label>
+            <select
+              name="district"
+              value={formData.district}
+              onChange={handleDistrictChange}
+              className="border p-2 w-full"
+              required
+            >
+              <option value="">Select District</option>
+              {districts.map((dist) => (
+                <option key={dist.district} value={dist.district}>
+                  {dist.district}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Address */}
+
           <div>
-            <label className="block font-medium">Address</label>
+            <label className="block font-medium">Location</label>
             <select
               name="address"
               value={formData.address}
               onChange={handleInputChange}
-              className="mt-1 block w-full border rounded-md p-2"
+              className="border p-2 w-full"
+              required
             >
-              <option value="">Select Address</option>
-              {LocationAddressName.map((loc) => (
+              <option value="">Select Location</option>
+              {locations.map((loc) => (
                 <option key={loc.value} value={loc.value}>
                   {loc.label}
                 </option>
@@ -320,7 +413,7 @@ const EditRoom = () => {
               } `}
               disabled={isLoading}
             >
-              {!isLoading ? 'Update Room' : 'Data Updating...' }  
+              {!isLoading ? "Update Room" : "Data Updating..."}
             </button>
           </div>
         </form>
