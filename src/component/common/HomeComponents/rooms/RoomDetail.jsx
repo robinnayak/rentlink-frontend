@@ -147,7 +147,7 @@ const RoomDetails = () => {
         <Navbar />
       </div>
 
-      <div className="container my-8 p-8 bg-white rounded-lg shadow-xl max-w-4xl mx-auto transition-all duration-300">
+      <div className="container my-8 p-8 bg-white rounded-lg shadow-xl max-w-4xl mx-auto transition-all duration-300 pt-24">
         <h1 className="text-4xl font-bold mb-6 text-gray-900 text-center">
           {title}
         </h1>

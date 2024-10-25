@@ -56,7 +56,7 @@ const Login = () => {
     <>
       <Navbar />
 
-    <div className="flex justify-center items-center h-screen bg-primary-bg">
+    <div className="flex justify-center items-center h-screen bg-primary-bg pt-24">
       <form
         onSubmit={submitLogin}
         className="bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md"

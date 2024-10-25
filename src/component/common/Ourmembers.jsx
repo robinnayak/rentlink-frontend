@@ -9,7 +9,7 @@ const OurMembers = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 py-12">
+      <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 py-12 pt-24">
         <h1 className="text-4xl text-center text-white font-bold mb-20">
           Meet Our Members
         </h1>

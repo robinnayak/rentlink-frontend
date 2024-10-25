@@ -17,6 +17,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [role, setRole] = useState("landowner"); // Track role
+  const [flash, setFlash] = useState(false);
   const [passwordError, setPasswordError] = useState(""); // Password validation state
   const [passwordValidation, setPasswordValidation] = useState({
     hasUppercase: false,
@@ -30,6 +31,8 @@ const Register = () => {
 
   const handleRoleChange = (role) => {
     setRole(role);
+    setFlash(true);
+    setTimeout(() => setFlash(false), 300);
     setFormData({
       ...formData,
       is_landowner: role === "landowner",
@@ -126,36 +129,36 @@ const Register = () => {
         <Navbar />
       </div>
 
-      <div className="flex justify-center items-center h-screen bg-primary-bg">
+      <div className="flex justify-center items-center h-screen bg-primary-bg pt-28">
         {error && <p className="text-red-500">{error}</p>}
         <form
           onSubmit={submitUser}
           className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 w-full max-w-md"
         >
           <h1 className="text-2xl font-bold mb-6 text-center text-primary-text">
-            Register
+            {role === "landowner" ? "Landlord" : "Room Finder"} Registration
           </h1>
 
-          {/* Role selection */}
+          {/* Role selection with flash animation */}
           <div className="flex justify-center mb-6">
             <button
               type="button"
-              className={`px-4 py-2 mr-4 ${
+              className={`px-4 py-2 mr-4 rounded-lg transition-all duration-300 ${
                 role === "landowner"
                   ? "bg-primary-btn text-white"
                   : "bg-gray-200"
-              } rounded-lg`}
+              } ${flash?"animate-flash":""} rounded-lg`}
               onClick={() => handleRoleChange("landowner")}
             >
               Landlord
             </button>
             <button
               type="button"
-              className={`px-4 py-2 ${
+              className={`px-4 py-2 rounded-lg transition-all duration-300 ${
                 role === "room_finder"
                   ? "bg-primary-btn text-white"
                   : "bg-gray-200"
-              } rounded-lg`}
+              } ${flash?"animate-flash":""} rounded-lg`}
               onClick={() => handleRoleChange("room_finder")}
             >
               Room Finder
@@ -278,38 +281,6 @@ const Register = () => {
               9+ chars
             </span>
           </div>
-          {/* <div className="mb-4">
-            <ul className="text-sm text-gray-500">
-              <li
-                className={`${
-                  passwordValidation.hasUppercase ? "text-green-500" : ""
-                }`}
-              >
-                • At least one uppercase letter
-              </li>
-              <li
-                className={`${
-                  passwordValidation.hasNumber ? "text-green-500" : ""
-                }`}
-              >
-                • At least one number
-              </li>
-              <li
-                className={`${
-                  passwordValidation.hasSpecialChar ? "text-green-500" : ""
-                }`}
-              >
-                • At least one special character
-              </li>
-              <li
-                className={`${
-                  passwordValidation.hasMinLength ? "text-green-500" : ""
-                }`}
-              >
-                • At least 9 characters long
-              </li>
-            </ul>
-          </div> */}
 
           {/* Confirm Password */}
           <div className="mb-4">

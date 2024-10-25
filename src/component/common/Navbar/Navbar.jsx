@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   faBars,
   faTimes,
@@ -27,9 +27,16 @@ const Navbar = () => {
   const handleCloseMenu = () => {
     setIsOpen(false);
   };
-
+  // Disable body scroll when the menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [isOpen]);
   return (
-    <nav className="bg-gray-800 text-white p-4 shadow-md">
+    <nav className="bg-gray-800 text-white p-4 shadow-md fixed top-0 w-full z-50 pr-10">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo (Left) */}
         <div className="flex-shrink-0">
@@ -92,12 +99,17 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <ul
-        className={`lg:hidden bg-gray-800 text-white absolute right-0 top-16 w-full transition-transform duration-300 ease-in ${
-          isOpen ? "transform translate-x-0" : "transform translate-x-full"
+        className={`lg:hidden bg-gray-800 text-white fixed inset-0 top-16 w-full transform transition-transform duration-300 ease-in-out hide-scrollbar ${
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <li className="p-4 border-b border-gray-700">
-          <NavItem text="Home" link="/" icon={faHome} onClose={handleCloseMenu} />
+          <NavItem
+            text="Home"
+            link="/"
+            icon={faHome}
+            onClose={handleCloseMenu}
+          />
         </li>
         <li className="p-4 border-b border-gray-700">
           <NavItem
@@ -146,7 +158,12 @@ const Navbar = () => {
               />
             </li>
             <li className="p-4">
-              <NavItem text="Login" link="/login" icon={faSignInAlt} onClose={handleCloseMenu} />
+              <NavItem
+                text="Login"
+                link="/login"
+                icon={faSignInAlt}
+                onClose={handleCloseMenu}
+              />
             </li>
           </>
         )}

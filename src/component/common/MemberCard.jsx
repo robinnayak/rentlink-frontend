@@ -12,7 +12,7 @@ const MemberCard = ({
   linkedin,
 }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 transform transition-all hover:scale-105 hover:shadow-xl duration-300 ease-in-out relative w-104 mx-5">
+    <div className="bg-white shadow-lg rounded-lg p-6 transform transition-all hover:scale-105 hover:shadow-xl duration-300 ease-in-out w-104 mx-5">
       {/* Center the card and adjust width and height */}
 
       {/* Image section */}
