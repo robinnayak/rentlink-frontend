@@ -147,7 +147,7 @@ const Register = () => {
                 role === "landowner"
                   ? "bg-primary-btn text-white"
                   : "bg-gray-200"
-              } ${flash?"animate-flash":""} rounded-lg`}
+              } ${flash ? "animate-flash" : ""} rounded-lg`}
               onClick={() => handleRoleChange("landowner")}
             >
               Landlord
@@ -158,7 +158,7 @@ const Register = () => {
                 role === "room_finder"
                   ? "bg-primary-btn text-white"
                   : "bg-gray-200"
-              } ${flash?"animate-flash":""} rounded-lg`}
+              } ${flash ? "animate-flash" : ""} rounded-lg`}
               onClick={() => handleRoleChange("room_finder")}
             >
               Room Finder
@@ -212,20 +212,23 @@ const Register = () => {
           {/* Contact Number */}
           <div className="mb-4">
             <label className="block text-primary-text text-sm font-bold mb-2">
-              Contact Number <span className="text-red-500">*</span>
+              Contact Number{" "}
+              <span className="text-red-500 text-xs">
+                * This number will be visible in the site.
+              </span>
             </label>
             <input
-              type="text"
+              type="number"
               name="contact_number"
               value={formData.contact_number}
               onChange={handleChange}
-              className="shadow border rounded w-full py-2 px-3 text-primary-text focus:outline-none focus:shadow-outline"
+              className="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-primary-text focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               required
               maxLength={10}
               pattern="\d*"
               placeholder="Enter 10 digit phone number"
             />
-            {phoneError && <p className="text-red-500 text-sm">{phoneError}</p>}
+            {phoneError && <p className="text-red-500 text-xs">{phoneError}</p>}
           </div>
 
           {/* Password */}

@@ -86,17 +86,16 @@ const ProfileForm = ({ user_type, token }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); // Reset error message
+    setError(null);
 
     const { profile_image, ...profileDataWithoutImage } = profileData;
     let payload;
 
-    // Use FormData if there is an image; otherwise, use JSON
-    if (profile_image) {
+    if (profile_image instanceof File) {
       payload = new FormData();
-      Object.keys(profileDataWithoutImage).forEach((key) => {
-        payload.append(key, profileDataWithoutImage[key]);
-      });
+      Object.keys(profileDataWithoutImage).forEach((key) =>
+        payload.append(key, profileDataWithoutImage[key])
+      );
       payload.append("profile_image", profile_image);
     } else {
       payload = profileDataWithoutImage;
@@ -108,7 +107,12 @@ const ProfileForm = ({ user_type, token }) => {
           ? await putLandlordProfile(token, payload)
           : await putLeaseeProfile(token, payload);
 
-      console.log("Profile updated:", res);
+      // Assuming `res` includes the image URL after uploading
+      setProfileData((prevData) => ({
+        ...prevData,
+        profile_image: res.profile_image, // Update with new URL
+      }));
+
       setFlashMessage("Profile updated successfully");
       setTimeout(() => setFlashMessage(""), 3000);
     } catch (error) {
@@ -139,9 +143,9 @@ const ProfileForm = ({ user_type, token }) => {
           {error}
         </div>
       )}
-      
+
       {/* Profile Image Display */}
-      <div className="flex items-center justify-center mb-6">
+      <div className="flex justify-center mb-6">
         {profile_image_link ? (
           // Display the uploaded profile image if available
           <img
@@ -292,7 +296,7 @@ const ProfileForm = ({ user_type, token }) => {
           </div>
 
           {/* Profile Image */}
-          <div>
+          {/* <div>
             <label className="block text-gray-700 mb-2" htmlFor="profile_image">
               Profile Image
             </label>
@@ -303,7 +307,7 @@ const ProfileForm = ({ user_type, token }) => {
               onChange={handleImageChange}
               className="w-full p-3 border border-gray-300 rounded-md"
             />
-          </div>
+          </div> */}
 
           {/* Conditional fields for Landlord */}
           {user_type === "Landlord" && (

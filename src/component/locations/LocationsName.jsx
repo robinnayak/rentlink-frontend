@@ -24,36 +24,7 @@ export const LocationName = [
                     { value: 'Mulghat', label: 'Mulghat' },
                 ],
             },
-            {
-                district: 'Ilam',
-                locations: [
-                    { value: 'Ilam Bazaar', label: 'Ilam Bazaar' },
-                    { value: 'Kanyam', label: 'Kanyam' },
-                    { value: 'Fikkal', label: 'Fikkal' },
-                    { value: 'Antu Danda', label: 'Antu Danda' },
-                    { value: 'Mangalbare', label: 'Mangalbare' },
-                ],
-            },
-            {
-                district: 'Jhapa',
-                locations: [
-                    { value: 'Birtamod', label: 'Birtamod' },
-                    { value: 'Damak', label: 'Damak' },
-                    { value: 'Kakarbhitta', label: 'Kakarbhitta' },
-                    { value: 'Chandragadhi', label: 'Chandragadhi' },
-                    { value: 'Arjundhara', label: 'Arjundhara' },
-                ],
-            },
-            {
-                district: 'Morang',
-                locations: [
-                    { value: 'Biratnagar', label: 'Biratnagar' },
-                    { value: 'Rangeli', label: 'Rangeli' },
-                    { value: 'Urlabari', label: 'Urlabari' },
-                    { value: 'Letang', label: 'Letang' },
-                    { value: 'Belbari', label: 'Belbari' },
-                ],
-            },
+            
             // Continue adding other districts from Province 1...
         ],
     },
@@ -82,36 +53,7 @@ export const LocationName = [
                     { value: 'Sabaila', label: 'Sabaila' },
                 ],
             },
-            {
-                district: 'Mahottari',
-                locations: [
-                    { value: 'Bardibas', label: 'Bardibas' },
-                    { value: 'Jaleshwar', label: 'Jaleshwar' },
-                    { value: 'Matihani', label: 'Matihani' },
-                    { value: 'Ramgopalpur', label: 'Ramgopalpur' },
-                    { value: 'Gaushala', label: 'Gaushala' },
-                ],
-            },
-            {
-                district: 'Parsa',
-                locations: [
-                    { value: 'Birgunj', label: 'Birgunj' },
-                    { value: 'Pokhariya', label: 'Pokhariya' },
-                    { value: 'Subarna', label: 'Subarna' },
-                    { value: 'Jagarnathpur', label: 'Jagarnathpur' },
-                    { value: 'Parsagadhi', label: 'Parsagadhi' },
-                ],
-            },
-            {
-                district: 'Sarlahi',
-                locations: [
-                    { value: 'Malangwa', label: 'Malangwa' },
-                    { value: 'Haripur', label: 'Haripur' },
-                    { value: 'Lalbandi', label: 'Lalbandi' },
-                    { value: 'Harion', label: 'Harion' },
-                    { value: 'Nawalpur', label: 'Nawalpur' },
-                ],
-            },
+            
             // Continue adding other districts from Province 2...
         ],
     },

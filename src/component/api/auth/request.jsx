@@ -8,12 +8,79 @@ import {
   logout_api,
   filter_room_api,
   contact_api,
+  landlord_profile_api,
+  leasee_profile_api,
 } from "./endpoints";
+
+export const getLandlordProfile = async (token) => {
+  const response = await axios.get(landlord_profile_api, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log("get land lord ",response.data)
+  // console.log("res",response.data)
+  return response.data;
+};
+
+export const getLeaseeProfile = async (token) => {
+  const response = await axios.get(leasee_profile_api, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log("get leasee res",response.data)
+  return response.data;
+};
+
+export const putLandlordProfile = async (token, credential) => {
+  const formData = new FormData();
+
+  // Append data to FormData
+  for (const key in credential) {
+    formData.append(key, credential[key]);
+  }
+
+  console.log("landlord data we get before saving", credential);
+  console.log("landlord token we get before saving", token);
+
+  const response = await axios.put(landlord_profile_api, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  console.log("get landlord", response.data);
+  return response.data;
+};
+
+export const putLeaseeProfile = async (token, credential) => {
+  const formData = new FormData();
+
+  // Append data to FormData
+  for (const key in credential) {
+    formData.append(key, credential[key]);
+  }
+
+  console.log("leasee data we get before saving", credential);
+  console.log("leasee token we get before saving", token);
+
+  const response = await axios.put(leasee_profile_api, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  console.log("get leasee", response.data);
+  return response.data;
+};
 
 export const postRegisterAPI = async (credentials) => {
   try {
-    console.log("credential", credentials);
-
     const res = await axios.post(
       register_api,
       {
@@ -197,8 +264,7 @@ export const putOwnerRoomsByIdAPI = async (token, room_id, formData) => {
   return response.data;
 };
 
-
-export const getFilterRoomsApi = async (token, filters = null) => {  
+export const getFilterRoomsApi = async (token, filters = null) => {
   try {
     const headers = {
       "Content-Type": "application/json",
@@ -209,25 +275,31 @@ export const getFilterRoomsApi = async (token, filters = null) => {
     }
 
     // Check if filters are provided and construct the query string if so
-    const queryParams = filters && Object.keys(filters).length > 0 
-      ? `?${new URLSearchParams(filters).toString()}` 
-      : '';
+    const queryParams =
+      filters && Object.keys(filters).length > 0
+        ? `?${new URLSearchParams(filters).toString()}`
+        : "";
 
-    const res = await axios.get(`${filter_room_api}${queryParams}`, { headers });
-    
+    const res = await axios.get(`${filter_room_api}${queryParams}`, {
+      headers,
+    });
+
     return res.data;
   } catch (error) {
-    console.error("Error fetching rooms:", error.response?.data || error.message);
+    console.error(
+      "Error fetching rooms:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
-export const postContactUs = async (formData)=>{
-  const res = await axios.post(contact_api,formData,{
-    headers:{
-      "Content-Type":"application/json",
-    }
-  })
-  console.log("contact form res",res)
-  return res.data
-}
+export const postContactUs = async (formData) => {
+  const res = await axios.post(contact_api, formData, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  console.log("contact form res", res);
+  return res.data;
+};
