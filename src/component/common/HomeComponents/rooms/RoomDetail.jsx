@@ -9,6 +9,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import Comment from "../../comment/Comment";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -60,9 +61,9 @@ const RoomDetails = () => {
     navigate("/payment", { state: { room_id, room_title } });
   };
 
-  const handleView360 = (room_id,room_title) =>{
-    navigate("/view360", { state: { room_id, room_title}})
-  }
+  const handleView360 = (room_id, room_title) => {
+    navigate("/view360", { state: { room_id, room_title } });
+  };
 
   if (loading) {
     return (
@@ -192,7 +193,9 @@ const RoomDetails = () => {
           <p className="text-gray-700 mb-2">
             Location: {address}, {sub_address}
           </p>
-          <p className="text-gray-700 mb-2">Contact: {contact_number}</p>
+          {token && (
+            <p className="text-gray-700 mb-2">Contact: {contact_number}</p>
+          )}
           <p className="text-gray-700 mb-4">Owner Email: {owner_email}</p>
         </div>
 
@@ -235,6 +238,8 @@ const RoomDetails = () => {
           )}
         </div>
       </div>
+
+      <div>{token && <Comment token={token} room_id={room_id} />}</div>
     </>
   );
 };
@@ -279,8 +284,6 @@ const ActionButtons = ({
     }
   }
 
-
-
   return (
     <div className="flex space-x-4 mt-6">
       {/* <button
@@ -290,7 +293,7 @@ const ActionButtons = ({
             View 360
           </button> */}
     </div>
-  )
+  );
 };
 
 export default RoomDetails;

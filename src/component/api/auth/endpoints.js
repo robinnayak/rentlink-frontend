@@ -17,4 +17,4 @@ export const filter_room_api = `${BASE_URL}/${Auth}/rooms-filter/`
 // export const add_room_api = `${BASE_URL}/${Auth}/rooms/`
 
 export const contact_api = `${BASE_URL}/${Auth}/contact/`
-
+export const comment_api = `${BASE_URL}/${Auth}/roomsview/`

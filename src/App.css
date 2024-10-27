@@ -10,3 +10,7 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Edge */
 }
+
+.element {
+  forced-color-adjust: none;
+}

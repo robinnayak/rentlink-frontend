@@ -45,7 +45,7 @@ const Home = () => {
         {loading ? (
           <div className="text-center">Loading...</div> // Render loading indicator
         ) : (
-          <RoomList rooms={rooms} />
+          <RoomList token={token} rooms={rooms} />
         )}
         <ApiErrors error={error}/>
       </div>

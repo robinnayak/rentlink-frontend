@@ -10,6 +10,7 @@ import {
   contact_api,
   landlord_profile_api,
   leasee_profile_api,
+  comment_api,
 } from "./endpoints";
 
 export const getLandlordProfile = async (token) => {
@@ -303,3 +304,24 @@ export const postContactUs = async (formData) => {
   console.log("contact form res", res);
   return res.data;
 };
+
+export const getCommentApi = async (token,room_id)=>{
+  const response = await axios.get(`${comment_api}${room_id}/comments/`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+export const postCommentApi = async (token,room_id,credential)=>{
+  const response = await axios.post(`${comment_api}${room_id}/comments/`, credential, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log("post comment",response.data)
+  return response.data;
+}

@@ -1,10 +1,10 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { MEDIA_URL } from '../../../api/base';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { MEDIA_URL } from "../../../api/base";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
-const RoomCard = ({ room }) => {
+const RoomCard = ({ room, token }) => {
   // const [showDetails, setShowDetails] = useState(false);
   const navigate = useNavigate();
   // console.log("room card",room)
@@ -20,28 +20,41 @@ const RoomCard = ({ room }) => {
       {/* Image Section */}
       <img
         className="w-full h-48 object-cover"
-        src={room_link ? room_link : "https://via.placeholder.com/150/000000/FFFFFF/?text=No+Image"}
+        src={
+          room_link
+            ? room_link
+            : "https://via.placeholder.com/150/000000/FFFFFF/?text=No+Image"
+        }
         alt={room.title}
       />
-      
+
       <div className="px-6 py-4">
         <h2 className="font-bold text-xl mb-2">{room.title}</h2>
         <p className="text-gray-700 text-base">{room.description}</p>
-        <p className="text-gray-900 text-lg font-bold mt-2">NRP {room.price} /month</p>
+        <p className="text-gray-900 text-lg font-bold mt-2">
+          NRP {room.price} /month
+        </p>
         {room.is_available && (
           <div className="flex items-center mt-2">
-            <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 mr-2" />
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="text-green-500 mr-2"
+            />
             <span className="text-green-500 font-medium">Available</span>
           </div>
         )}
       </div>
 
       <div className="px-6 pt-4 pb-2">
-        <p className="text-gray-600">Location: {room.address}, {room.sub_address}</p>
-        <p className="text-gray-600">Contact: {room.contact_number}</p>
+        <p className="text-gray-600">
+          Location: {room.address}, {room.sub_address}
+        </p>
+        {token && (
+          <p className="text-gray-600">Contact: {room.contact_number}</p>
+        )}
         <div className="flex justify-end items-center mt-4">
-          <button 
-            onClick={handleViewDetails} 
+          <button
+            onClick={handleViewDetails}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             View Details
