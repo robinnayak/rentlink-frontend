@@ -186,6 +186,11 @@ const RoomDetails = () => {
 
         {/* Room Details */}
         <div className="text-center">
+        {!token && (
+            <p className="text-2xl text-gray-900 mb-6 font-semibold">
+              Please login to see more details
+            </p>
+        )}
           <p className="text-lg text-gray-700 mb-4">{description}</p>
           <p className="text-2xl text-gray-900 mb-6 font-semibold">
             NRP {price} /month
