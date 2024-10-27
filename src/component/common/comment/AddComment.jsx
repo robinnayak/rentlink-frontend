@@ -3,8 +3,12 @@ import { postCommentApi } from "../../api/auth/request";
 
 const AddComment = ({ token, room_id, onCommentAdded }) => {
   const [commentText, setCommentText] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleAddComment = async () => {
+    if (loading) return; // Prevents duplicate submissions
+
+    setLoading(true); // Start loading
     try {
       const credential = { comment_text: commentText };
       await postCommentApi(token, room_id, credential);
@@ -12,6 +16,8 @@ const AddComment = ({ token, room_id, onCommentAdded }) => {
       onCommentAdded(); // Refresh the comments in the Comment component
     } catch (error) {
       console.error("Error posting comment", error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -26,12 +32,16 @@ const AddComment = ({ token, room_id, onCommentAdded }) => {
         placeholder="Write your comment here..."
         value={commentText}
         onChange={(e) => setCommentText(e.target.value)}
+        disabled={loading} // Disable textarea if loading
       />
       <button
         onClick={handleAddComment}
-        className="mt-4 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-md font-semibold hover:scale-105 transition transform duration-300"
+        className={`mt-4 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-md font-semibold hover:scale-105 transition transform duration-300 ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={loading} // Disable button if loading
       >
-        Post Comment
+        {loading ? "Posting..." : "Post Comment"}
       </button>
     </div>
   );

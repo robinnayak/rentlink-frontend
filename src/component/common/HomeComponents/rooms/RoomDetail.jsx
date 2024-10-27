@@ -53,7 +53,7 @@ const RoomDetails = () => {
 
   // Handle Request Visit (For Leasee)
   const handleRequestVisit = (room_id) => {
-    alert(`Visit request submitted for room: ${room_id}`);
+    alert(`Visit request submitted for room ID: ${room_id}. This feature is currently under maintenance.`);
   };
 
   // Handle Deposit (for both Leasee and Landlord)
@@ -125,13 +125,13 @@ const RoomDetails = () => {
             href={location_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white bg-purple-600 border border-blue-500 rounded-lg px-4 py-2 mt-4 inline-block hover:bg-blue-700 transition duration-300"
+            className="inline-block px-6 py-3 mt-4 text-white font-semibold bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg shadow-md transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
           >
             View on Map
           </a>
           <button
             onClick={() => handleRequestVisit(room_id)}
-            className="ml-4 text-white bg-blue-600 border border-blue-500 rounded-lg px-4 py-2 mt-4 inline-block hover:bg-blue-700 transition duration-300"
+            className="ml-4 inline-block px-6 py-3 mt-4 text-white font-semibold bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg shadow-md transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
           >
             Request Visit
           </button>
@@ -141,6 +141,7 @@ const RoomDetails = () => {
       return <p className="text-red-500 mt-2">{location_url}</p>;
     }
   };
+  
 
   return (
     <>
@@ -186,11 +187,11 @@ const RoomDetails = () => {
 
         {/* Room Details */}
         <div className="text-center">
-        {!token && (
+          {!token && (
             <p className="text-2xl text-gray-900 mb-6 font-semibold">
               Please login to see more details
             </p>
-        )}
+          )}
           <p className="text-lg text-gray-700 mb-4">{description}</p>
           <p className="text-2xl text-gray-900 mb-6 font-semibold">
             NRP {price} /month
@@ -248,8 +249,6 @@ const RoomDetails = () => {
     </>
   );
 };
-
-// Separate ActionButtons Component
 const ActionButtons = ({
   user_type,
   room_id,
@@ -268,19 +267,19 @@ const ActionButtons = ({
         <div className="flex space-x-4 mt-6">
           <button
             onClick={() => handleRequestVisit(room_id)}
-            className="text-white bg-blue-600 border border-blue-500 rounded-lg px-4 py-2 hover:bg-blue-700 transition duration-300"
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
           >
             Request Visit
           </button>
           <button
             onClick={() => handleDeposit(room_id, room_title)}
-            className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-teal-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
           >
             Deposit Now
           </button>
           {/* <button
             onClick={() => handleView360(room_id, room_title)}
-            className="text-white bg-green-600 border border-green-500 rounded-lg px-4 py-2 hover:bg-green-700 transition duration-300"
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
           >
             View 360
           </button> */}
@@ -288,7 +287,6 @@ const ActionButtons = ({
       );
     }
   }
-
   return (
     <div className="flex space-x-4 mt-6">
       {/* <button

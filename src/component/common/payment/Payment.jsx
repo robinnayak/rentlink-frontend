@@ -18,9 +18,8 @@ export const Payment = () => {
       const res = await postDeposit(token, room_id);
       console.log(res.data);
     } catch (err) {
-
-      const errorMessage = handleApiError(err)
-      console.log("payment error",errorMessage)
+      const errorMessage = handleApiError(err);
+      console.log("payment error", errorMessage);
     }
     navigate(-1); // Navigate back after payment
   };
@@ -30,14 +29,20 @@ export const Payment = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-8">
-        <h1 className="text-2xl font-bold mb-4 text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-300 via-blue-300 to-pink-300 p-4">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md transform transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-2xl">
+        <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
           Payment for Room: {room_title}
         </h1>
-        <p className="mb-4 text-center">Username: {username}</p>
+        <p className="mb-4 text-center text-lg text-gray-700">
+          Username: <span className="font-semibold">{username}</span>
+        </p>
 
-        <div className="mb-4">
+        <p className="mb-6 text-center text-gray-600">
+          <span className="font-semibold">Note:</span> The room map requires a one-time payment. Please contact the owner before your visit. This payment is valid until the room is no longer available. Currently, we are in a testing phase, so no payment methods have been added, and you can use this service free of charge for now.
+        </p>
+
+        <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
             Amount (NRS)
           </label>
@@ -53,7 +58,7 @@ export const Payment = () => {
         <div className="flex flex-col space-y-4">
           <button
             onClick={handlePayment}
-            className="flex items-center justify-center w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+            className="flex items-center justify-center w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-2 px-4 rounded transition transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-300"
           >
             <FontAwesomeIcon icon={faMoneyBillWave} className="mr-2" />
             Pay 20 NRS
@@ -61,7 +66,7 @@ export const Payment = () => {
 
           <button
             onClick={handleCancel}
-            className="flex items-center justify-center w-full bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:shadow-outline"
+            className="flex items-center justify-center w-full bg-gray-500 text-white font-bold py-2 px-4 rounded transition transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400"
           >
             Cancel
           </button>
@@ -70,3 +75,5 @@ export const Payment = () => {
     </div>
   );
 };
+
+export default Payment;
