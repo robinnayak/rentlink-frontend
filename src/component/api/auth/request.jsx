@@ -11,6 +11,7 @@ import {
   landlord_profile_api,
   leasee_profile_api,
   comment_api,
+  identity_api,
 } from "./endpoints";
 
 export const getLandlordProfile = async (token) => {
@@ -217,8 +218,8 @@ export const postDeposit = async (token, id) => {
 // "http://localhost:8000/rooms/rooms/",
 
 export const postAddRoom = async (token, formData) => {
-  console.log("postAddRoom token", token);
-  console.log("postAddRoom formData", formData);
+  // console.log("postAddRoom token", token);
+  // console.log("postAddRoom formData", formData);
   try {
     const response = await axios.post(room_api, formData, {
       headers: {
@@ -323,5 +324,58 @@ export const postCommentApi = async (token,room_id,credential)=>{
     },
   });
   console.log("post comment",response.data)
+  return response.data;
+}
+
+export const getIdentityApi = async (token,room_id)=>{
+  const response = await axios.get(`${identity_api}${room_id}/identity/`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+}
+
+
+export const postIdentityRoom = async (token,room_id, formData) => {
+  // console.log("postAddRoom token", token);
+  // console.log("postAddRoom formData", formData);
+  try {
+    const response = await axios.post(`${identity_api}${room_id}/identity/`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("Room added successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding room:", error);
+  }
+};
+
+export const putIdentityRoom = async (token,room_id, formData) => {
+  // console.log("postAddRoom token", token);
+  // console.log("postAddRoom formData", formData);
+  try {
+    const response = await axios.put(`${identity_api}${room_id}/identity/`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("Room added successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding room:", error);
+  }
+};
+
+export const deleteIdentityApi = async (token,room_id)=>{
+  const response = await axios.delete(`${identity_api}${room_id}/identity/`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 }

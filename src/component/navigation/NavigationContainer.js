@@ -15,6 +15,7 @@ import ViewRoom from '../landlord/ViewRoom';
 import NotFound from './NotFound';
 import Settings from '../common/settings/Settings';
 import View360 from '../landlord/View360';
+import IdentityVerification from '../common/HomeComponents/rooms/IdentityVerification';
 
 const NavigationContainer = () => {
   return (
@@ -37,6 +38,7 @@ const NavigationContainer = () => {
         <Route path="/view-rooms" element={<ProtectedRoute element={<ViewRoom />} />} />
         
         <Route path="/payment" element={<ProtectedRoute element={<Payment />} />} />
+        <Route path="/identity" element={<ProtectedRoute element={<IdentityVerification />} />} />
 
         <Route path='/view360' element={<View360/>} />
 

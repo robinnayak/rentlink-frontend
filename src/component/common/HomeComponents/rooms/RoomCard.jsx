@@ -50,7 +50,7 @@ const RoomCard = ({ room, token }) => {
           Location: {room.address}, {room.sub_address}
         </p>
         {token && (
-          <p className="text-gray-600">Contact: {room.contact_number}</p>
+          <p className="text-gray-600">Email: {room.owner_email}</p>
         )}
         <div className="flex justify-end items-center mt-4">
           <button

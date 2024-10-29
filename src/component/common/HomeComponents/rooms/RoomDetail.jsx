@@ -3,13 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MEDIA_URL } from "../../../api/base";
 import { useSelector } from "react-redux";
 import Navbar from "../../Navbar/Navbar";
-import { getRoomsDetailApi } from "../../../api/auth/request";
+import { getIdentityApi, getRoomsDetailApi } from "../../../api/auth/request";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import Comment from "../../comment/Comment";
+import { handleApiError } from "../../../utils/ApiErrorHandle";
 
 const RoomDetails = () => {
   const location = useLocation();
@@ -21,6 +22,12 @@ const RoomDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // For slider control
   const navigate = useNavigate(); // For redirecting to payment
 
+  //verifications data
+  const [identityData, setIdentityData] = useState({
+    is_verified: false,
+  });
+
+  const [error, setError] = useState(null);
   // Fetch room details by room ID
   useEffect(() => {
     const fetchRoomDetails = async () => {
@@ -41,6 +48,21 @@ const RoomDetails = () => {
     }
   }, [room_id, token]);
 
+  useEffect(() => {
+    const fetchVerificationData = async () => {
+      try {
+        const res = await getIdentityApi(token, room_id);
+        setIdentityData(res);
+        console.log("res identity data from room details", res.is_verified);
+        setError(null);
+      } catch (error) {
+        console.error("Identity fetch error:", error);
+        setError(handleApiError(error));
+      }
+    };
+    fetchVerificationData();
+  });
+
   // Handle Confirm Visit (For Landlord)
   const handleConfirm = (room_id) => {
     alert(`Visit confirmed for room: ${room_id}`);
@@ -53,7 +75,9 @@ const RoomDetails = () => {
 
   // Handle Request Visit (For Leasee)
   const handleRequestVisit = (room_id) => {
-    alert(`Visit request submitted for room ID: ${room_id}. This feature is currently under maintenance.`);
+    alert(
+      `Visit request submitted for room ID: ${room_id}. This feature is currently under maintenance.`
+    );
   };
 
   // Handle Deposit (for both Leasee and Landlord)
@@ -64,7 +88,9 @@ const RoomDetails = () => {
   const handleView360 = (room_id, room_title) => {
     navigate("/view360", { state: { room_id, room_title } });
   };
-
+  const handleIdentityRoom = (room_id, room_title) => {
+    navigate("/identity", { state: { room_id, room_title, token } });
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -141,7 +167,6 @@ const RoomDetails = () => {
       return <p className="text-red-500 mt-2">{location_url}</p>;
     }
   };
-  
 
   return (
     <>
@@ -153,6 +178,16 @@ const RoomDetails = () => {
         <h1 className="text-4xl font-bold mb-6 text-gray-900 text-center">
           {title}
         </h1>
+        {error && (
+          <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
+            {error} Verification required to view map and contact number.
+          </div>
+        )}
+        {identityData && identityData?.is_verified && (
+          <div className="text-green-600 text-center bg-green-200 p-2 rounded animate-pulse mb-4">
+            User identity has been verified successfully.
+          </div>
+        )}
 
         {/* Room Image Slider */}
         <div className="relative mb-6">
@@ -199,14 +234,17 @@ const RoomDetails = () => {
           <p className="text-gray-700 mb-2">
             Location: {address}, {sub_address}
           </p>
-          {token && (
+
+          {token && identityData.is_verified && (
             <p className="text-gray-700 mb-2">Contact: {contact_number}</p>
           )}
           <p className="text-gray-700 mb-4">Owner Email: {owner_email}</p>
         </div>
 
         {/* Map or Payment Section */}
-        <div className="flex justify-center mt-8">{renderMapOrPayment()}</div>
+        {identityData?.is_verified && (
+          <div className="flex justify-center mt-8">{renderMapOrPayment()}</div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex justify-center">
@@ -219,7 +257,9 @@ const RoomDetails = () => {
             handleCancel={handleCancel}
             handleDeposit={handleDeposit}
             handleView360={handleView360}
+            handleIdentityRoom={handleIdentityRoom}
             room_title={title}
+            identityData={identityData}
           />
         </div>
 
@@ -259,33 +299,51 @@ const ActionButtons = ({
   handleDeposit,
   handleView360,
   room_title,
+  handleIdentityRoom,
+  identityData,
 }) => {
   // Show buttons if location URL is not HTTP/HTTPS
-  if (!location_url.startsWith("http") && !location_url.startsWith("https")) {
-    if (user_type === "Leasee" || user_type === "Landlord") {
-      return (
-        <div className="flex space-x-4 mt-6">
-          <button
-            onClick={() => handleRequestVisit(room_id)}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
-          >
-            Request Visit
-          </button>
-          <button
-            onClick={() => handleDeposit(room_id, room_title)}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-teal-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
-          >
-            Deposit Now
-          </button>
-          {/* <button
+  if (user_type === "Leasee" || user_type === "Landlord") {
+    if (identityData?.is_verified) {
+      if (
+        !location_url.startsWith("http") &&
+        !location_url.startsWith("https")
+      ) {
+        return (
+          <div className="flex space-x-4 mt-6">
+            <button
+              onClick={() => handleRequestVisit(room_id)}
+              className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
+            >
+              Request Visit
+            </button>
+            <button
+              onClick={() => handleDeposit(room_id, room_title)}
+              className="px-6 py-3 rounded-lg bg-gradient-to-r from-green-500 to-teal-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
+            >
+              Deposit Now
+            </button>
+            {/* <button
             onClick={() => handleView360(room_id, room_title)}
             className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
           >
             View 360
           </button> */}
-        </div>
-      );
+          </div>
+        );
+      }
     }
+
+    return (
+      <div className="flex space-x-4 mt-6">
+        <button
+          onClick={() => handleIdentityRoom(room_id, room_title)}
+          className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold shadow-md hover:scale-105 hover:shadow-lg transform transition-all duration-300 ease-in-out"
+        >
+          Get Contact
+        </button>
+      </div>
+    );
   }
   return (
     <div className="flex space-x-4 mt-6">
