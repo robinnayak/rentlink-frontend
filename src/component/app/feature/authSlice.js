@@ -38,9 +38,9 @@ const authSlice = createSlice({
       state.token = "";
       state.user_type = "";
       state.user = "";
-      Cookies.remove("token");
-      Cookies.remove("email");
-      Cookies.remove("is_landlord");
+      Cookies.remove("rent_room_token");
+      Cookies.remove("rent_room_email");
+      Cookies.remove("rent_room_is_landowner");
     },
   },
 });

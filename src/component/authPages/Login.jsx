@@ -39,9 +39,9 @@ const Login = () => {
       dispatch(setUser({is_landowner:res.user.is_landowner}))
 
       // Store token and email in cookies with expiration of 7 days
-      Cookies.set("token", res.access, { expires: 7 });
-      Cookies.set("email", res.user.email, { expires: 7 });
-      Cookies.set("is_landowner", res.user?.is_landowner, { expires: 7 });
+      Cookies.set("rent_room_token", res.access, { expires: 7 });
+      Cookies.set("rent_room_email", res.user.email, { expires: 7 });
+      Cookies.set("rent_room_is_landowner", res.user?.is_landowner, { expires: 7 });
 
       // Navigate to the home page after successful login
       navigate("/");
