@@ -10,9 +10,9 @@ function AppContent() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const email = Cookies.get("email");
-    const is_landowner = Cookies.get("is_landowner")
+    const token = Cookies.get("rent_room_token");
+    const email = Cookies.get("rent_room_email");
+    const is_landowner = Cookies.get("rent_room_is_landowner")
     if(token && email){
       dispatch(setToken(token));
       dispatch(setUser({email: email}));
