@@ -41,7 +41,7 @@ const ProfileForm = ({ user_type, token }) => {
           user_type === "Landlord"
             ? await getLandlordProfile(token)
             : await getLeaseeProfile(token);
-        console.log("res data", res);
+        // console.log("res data", res);
         setProfileData(res);
         setSelectedProvince(res.province || "");
         setSelectedDistrict(res.district || "");

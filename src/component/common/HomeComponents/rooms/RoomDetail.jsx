@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MEDIA_URL } from "../../../api/base";
 import { useSelector } from "react-redux";
 import Navbar from "../../Navbar/Navbar";
@@ -17,7 +17,7 @@ import { handleApiError } from "../../../utils/ApiErrorHandle";
 const RoomDetails = () => {
   // const location = useLocation();
   // const { room_id } = location.state || {}; // Get the passed room ID
-  const { pk:room_id } = useParams();
+  const { pk: room_id } = useParams();
   const token = useSelector((state) => state.auth?.token);
   const user_type = useSelector((state) => state.auth?.user_type); // Get user type (Leasee or Landlord)
   const [roomData, setRoomData] = useState(null); // State to hold room data
@@ -158,6 +158,16 @@ const RoomDetails = () => {
     );
   };
 
+  const tokenExist = () => {
+    if (!token) {
+      return (
+        <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
+          Login required to view map and contact Details.
+        </div>
+      );
+    }
+  };
+
   const renderMapOrPayment = () => {
     if (location_url.startsWith("http") || location_url.startsWith("https")) {
       return (
@@ -193,15 +203,12 @@ const RoomDetails = () => {
         <h1 className="text-4xl font-bold mb-6 text-gray-900 text-center">
           {title}
         </h1>
-        {error && token ? (
+        {error && token && (
           <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
             {error} Verification required to view map and contact number.
           </div>
-        ):(
-          <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
-            Login to View Other Details such as Location of room and Contact Details of Owner
-          </div>
         )}
+        {tokenExist()}
         {identityData && identityData?.is_verified && (
           <div className="text-green-600 text-center bg-green-200 p-2 rounded animate-pulse mb-4">
             User identity has been verified successfully.

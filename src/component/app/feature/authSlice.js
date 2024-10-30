@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import Cookies from "js-cookie"
 const initialState = {
   status: "",
   user: "",
+  email:"",
   token: "",
   user_type: "",
   identity_is_verified: "",
+  is_landowner:false,
 };
 
 const authSlice = createSlice({
@@ -14,8 +16,10 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      // console.log("state user", state.user);
-      if (state.user && state.user?.is_landowner) {
+      state.email = action.payload.email || ""
+      state.is_landowner = action.payload.is_landowner
+
+      if (state.is_landowner) {
         state.user_type = "Landlord";
       } else {
         state.user_type = "Leasee";
@@ -23,7 +27,6 @@ const authSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload; // Store token
-      // state.user_type = action.payload.user_type; // Optional: Store user type if needed
       state.status = "Logged In";
     },
     setIdentityVerified: (state, action) => {
@@ -35,6 +38,9 @@ const authSlice = createSlice({
       state.token = "";
       state.user_type = "";
       state.user = "";
+      Cookies.remove("token");
+      Cookies.remove("email");
+      Cookies.remove("is_landlord");
     },
   },
 });
