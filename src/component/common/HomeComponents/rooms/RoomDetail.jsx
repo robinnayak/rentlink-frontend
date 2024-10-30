@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { MEDIA_URL } from "../../../api/base";
 import { useSelector } from "react-redux";
 import Navbar from "../../Navbar/Navbar";
 import { getIdentityApi, getRoomsDetailApi } from "../../../api/auth/request";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faChevronLeft,
   faChevronRight,
+  faShareSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import Comment from "../../comment/Comment";
 import { handleApiError } from "../../../utils/ApiErrorHandle";
 
 const RoomDetails = () => {
-  const location = useLocation();
-  const { room_id } = location.state || {}; // Get the passed room ID
+  // const location = useLocation();
+  // const { room_id } = location.state || {}; // Get the passed room ID
+  const { pk:room_id } = useParams();
   const token = useSelector((state) => state.auth?.token);
   const user_type = useSelector((state) => state.auth?.user_type); // Get user type (Leasee or Landlord)
   const [roomData, setRoomData] = useState(null); // State to hold room data
   const [loading, setLoading] = useState(true); // Loading state
+  const [isCopied, setIsCopied] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // For slider control
   const navigate = useNavigate(); // For redirecting to payment
 
@@ -29,13 +33,24 @@ const RoomDetails = () => {
 
   const [error, setError] = useState(null);
   // Fetch room details by room ID
+
+  const handleShareLink = () => {
+    console.log("window location herf", window.location.href);
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      })
+      .catch((error) => console.error("Failed to copy link:", error));
+  };
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
         const res = await getRoomsDetailApi(token, room_id);
 
         setRoomData(res); // Assuming the response structure has data field
-        console.log("res room detail data", res);
+        // console.log("res room detail data", res);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching room details:", error);
@@ -53,7 +68,7 @@ const RoomDetails = () => {
       try {
         const res = await getIdentityApi(token, room_id);
         setIdentityData(res);
-        console.log("res identity data from room details", res.is_verified);
+        // console.log("res identity data from room details", res.is_verified);
         setError(null);
       } catch (error) {
         console.error("Identity fetch error:", error);
@@ -178,9 +193,13 @@ const RoomDetails = () => {
         <h1 className="text-4xl font-bold mb-6 text-gray-900 text-center">
           {title}
         </h1>
-        {error && (
+        {error && token ? (
           <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
             {error} Verification required to view map and contact number.
+          </div>
+        ):(
+          <div className="text-red-600 text-center bg-red-200 p-2 rounded animate-pulse mb-4">
+            Login to View Other Details such as Location of room and Contact Details of Owner
           </div>
         )}
         {identityData && identityData?.is_verified && (
@@ -219,7 +238,18 @@ const RoomDetails = () => {
             </div>
           )}
         </div>
+        <button
+          onClick={handleShareLink}
+          className="text-gray-700 hover:text-gray-900 focus:outline-none transition-colors"
+        >
+          <FontAwesomeIcon icon={faShareSquare} size="lg" />
+        </button>
 
+        {isCopied && (
+          <p className="text-green-500 text-center mt-2">
+            Link copied to clipboard!
+          </p>
+        )}
         {/* Room Details */}
         <div className="text-center">
           {!token && (
