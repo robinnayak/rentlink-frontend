@@ -36,7 +36,7 @@ const Navbar = () => {
     }
   }, [isOpen]);
   return (
-    <nav className="bg-gray-800 text-white p-4 shadow-md fixed top-0 w-full z-50 pr-10">
+    <nav className="bg-gradient-to-r from-gray-500 to-gray-400 text-gray-700 p-4 shadow-md fixed top-0 w-full z-50 pr-10">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo (Left) */}
         <div className="flex-shrink-0">
