@@ -4,7 +4,7 @@ import MemberCard from "./MemberCard"; // Import reusable card component
 import Navbar from "./Navbar/Navbar";
 import MemberImage from "../../photos/member1.png"; // Adjust the image path accordingly
 import MemberImage2 from "../../photos/member2.png"; // Adjust the image path accordingly
-
+import MemberImage3 from "../../photos/member3.png"; // Adjust the image path accordingly
 const OurMembers = () => {
   return (
     <>
@@ -21,6 +21,14 @@ const OurMembers = () => {
             description="Highly motivated to develop solutions that benefit society. Passionate about leveraging technology to create impactful and user-friendly applications."
             MemberImage={MemberImage}
             email="robinnayak86@gmail.com"
+            linkedin="https://www.linkedin.com/in/robin-nayak-1093371b6/"
+          />
+          <MemberCard
+            name="Sushant Nayak"
+            role="Marketing Head & Partner"
+            description="Dedicated to driving brand growth and market reach. Creative strategist with a keen eye for trends, always aiming to connect with audiences in innovative ways."
+            MemberImage={MemberImage3}
+            email="sushantsnayak1234@gmail.com"
             linkedin="https://www.linkedin.com/in/robin-nayak-1093371b6/"
           />
           <MemberCard
