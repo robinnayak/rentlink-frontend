@@ -16,6 +16,8 @@ import NotFound from './NotFound';
 import Settings from '../common/settings/Settings';
 import View360 from '../landlord/View360';
 import IdentityVerification from '../common/HomeComponents/rooms/IdentityVerification';
+import AboutUs from '../common/FooterLinks/AboutUs';
+import FAQ from '../common/FooterLinks/FAQ';
 
 const NavigationContainer = () => {
   return (
@@ -28,7 +30,9 @@ const NavigationContainer = () => {
         {/* Authenticated Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/members" element={<OurMembers />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="/rooms/:pk" element={<RoomDetail />} />
 
         <Route path="/add-room" element={<ProtectedRoute element={<AddRoom />} />} />

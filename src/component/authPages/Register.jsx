@@ -124,12 +124,12 @@ const Register = () => {
   };
 
   return (
-    <>
+    <div className="mb-16">
       <div className="mb-4">
         <Navbar />
       </div>
 
-      <div className="flex justify-center items-center h-screen bg-primary-bg pt-28">
+      <div className="flex justify-center items-center h-screen bg-primary-bg pt-28 my-10">
         {error && <p className="text-red-500">{error}</p>}
         <form
           onSubmit={submitUser}
@@ -312,7 +312,7 @@ const Register = () => {
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
