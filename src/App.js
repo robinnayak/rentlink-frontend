@@ -5,6 +5,7 @@ import NavigationContainer from "./component/navigation/NavigationContainer";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { setToken, setUser } from "./component/app/feature/authSlice";
+import Footer from "./component/common/Navbar/Footer";
 
 function AppContent() {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ function App() {
   return (
     <Provider store={store}>
       <AppContent />
+      <Footer/>
     </Provider>
   );
 }
