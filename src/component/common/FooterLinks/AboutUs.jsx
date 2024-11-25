@@ -1,8 +1,50 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
+import { Helmet } from "react-helmet-async";
 const AboutUs = () => {
   return (
     <>
+      {/* Helmet for SEO */}
+      <Helmet>
+        <title>About Us - RoomRentNepal</title>
+        <meta
+          name="description"
+          content="Explore RoomRentNepal, your trusted platform for finding and renting rooms, featuring a unique map tool to help you easily locate and view available rooms in your desired area. Learn more about our mission, who we are, and why we are the best choice for your rental needs."
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://roomrentnepal.site/about" />
+
+        {/* Open Graph Tags */}
+        <meta property="og:title" content="About Us - RoomRentNepal" />
+        <meta
+          property="og:description"
+          content="Explore RoomRentNepal, your trusted platform for finding and renting rooms, featuring a unique map tool to help you easily locate and view available rooms in your desired area. Learn more about our mission, who we are, and why we are the best choice for your rental needs."
+        />
+        <meta property="og:url" content="https://roomrentnepal.site/about" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:image"
+          content="https://via.placeholder.com/600x400"
+        />
+
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: "About Us - RoomRentNepal",
+            url: "https://roomrentnepal.site/about",
+            description:
+              "Explore RoomRentNepal, your trusted platform for finding and renting rooms, featuring a unique map tool to help you easily locate and view available rooms in your desired area. Learn more about our mission, who we are, and why we are the best choice for your rental needs.",
+            publisher: {
+              "@type": "Organization",
+              name: "RoomRentNepal",
+              url: "https://roomrentnepal.site",
+              logo: "https://via.placeholder.com/600x400",
+            },
+          })}
+        </script>
+      </Helmet>
       <div className="mb-20">
         <Navbar />
       </div>
@@ -68,7 +110,6 @@ const AboutUs = () => {
               Join thousands of satisfied users who trust RoomRent to find their
               perfect space or the perfect tenant.
             </p>
-            
           </div>
         </div>
       </div>
