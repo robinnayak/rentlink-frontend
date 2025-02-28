@@ -2,4 +2,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://roomrentnepal.site/sitemap.xml
+Sitemap: https://roomrentnepal.robinspt.com/sitemap.xml
